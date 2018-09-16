@@ -2,7 +2,6 @@ package datastorage
 
 import (
 	"datastorage/models"
-	"log"
 )
 
 var dataRouter *models.DataRouter
@@ -10,7 +9,7 @@ var dataRouter *models.DataRouter
 func init() {
 	dataRouter = &models.DataRouter{}
 	dataRouter.LoadDatabases()
-	log.Println("Initialization of database layer")
+	dataRouter.OpenDatabaseConnections()
 }
 
 /*

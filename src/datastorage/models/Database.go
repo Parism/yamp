@@ -10,4 +10,5 @@ type DatabaseConf struct {
 	Password string `json:"password"`
 	Link     string `json:"link"`
 	Database string `json:"database"`
+	Type     string `json:"type"`
 }
