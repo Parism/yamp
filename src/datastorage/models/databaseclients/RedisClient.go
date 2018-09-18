@@ -1,6 +1,7 @@
 package databaseclients
 
 import (
+	"database/sql"
 	"log"
 
 	"github.com/go-redis/redis"
@@ -19,7 +20,23 @@ type RedisClient struct {
 GetClient function
 returns the pointer to the actual client
 */
-func (rc *RedisClient) GetClient() *redis.Client {
+func (rc *RedisClient) GetClient() interface{} {
+	return rc.client
+}
+
+/*
+GetMysqlClient function
+returns nil since the receiver of the function is a redis client
+*/
+func (rc *RedisClient) GetMysqlClient() *sql.DB {
+	return nil
+}
+
+/*
+GetRedisClient function
+returns the reference to the actual redis client object
+*/
+func (rc *RedisClient) GetRedisClient() *redis.Client {
 	return rc.client
 }
 
