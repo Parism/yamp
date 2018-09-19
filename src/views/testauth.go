@@ -1,24 +1,55 @@
 package views
 
 import (
+	"auth"
 	"datastorage"
 	"html/template"
 	"log"
 	"middleware"
 	"net/http"
+	"utils"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 func init() {
 	GetMux().HandleFunc("/secretadmin", middleware.WithMiddleware(secret,
+		middleware.NeedsSession(),
 		middleware.IsAdmin(),
 	))
 	GetMux().HandleFunc("/secret",
 		middleware.WithMiddleware(secret,
+			middleware.NeedsSession(),
 			middleware.IsUser(),
 		))
-	GetMux().HandleFunc("/", index)
+	GetMux().HandleFunc("/dosignup",
+		middleware.WithMiddleware(postsignup,
+			middleware.NeedsSession(),
+			middleware.CsrfProtection(),
+		))
+	GetMux().HandleFunc("/",
+		middleware.WithMiddleware(index,
+			middleware.NeedsSession(),
+		))
+}
+
+/*
+Context struct will hold all common files among the
+data objects
+All the data objects will also have a context object
+*/
+type Context struct {
+	Csrftoken string
+	Message   string
+}
+
+/*
+Data struct is a dummy
+struct holding data to test context
+*/
+type Data struct {
+	Context Context
+	Data    string
 }
 
 /*
@@ -30,35 +61,17 @@ will be used to test the gatekeeper
 and the role middleware
 */
 func index(w http.ResponseWriter, r *http.Request) {
+	csrftoken := utils.GetSessionValue(r, "csrftoken")
+	message := utils.GetSessionValue(r, "message")
+	var context Context
+	context.Csrftoken = csrftoken
+	context.Message = message
+	data := Data{}
+	data.Context = context
+	data.Data = "testdata"
 	t := template.Must(template.ParseFiles("./templates/index.html"))
-	t.Execute(w, nil)
-}
-
-/*
-login function
-passes the credentials provided to the gatekeeper for validation
-must implement a login function in the gatekeeper
-*/
-func login(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		postlogin(w, r)
-	} else {
-		t := template.Must(template.ParseFiles("./templates/login.html"))
-		t.Execute(w, nil)
-	}
-}
-
-/*
-signup function
-registers test users
-*/
-func signup(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		postsignup(w, r)
-	} else {
-		t := template.Must(template.ParseFiles("./templates/signup.html"))
-		t.Execute(w, nil)
-	}
+	log.Println("reached view function")
+	t.Execute(w, data)
 }
 
 /*
@@ -69,15 +82,19 @@ log him in and redirect. to be implemented
 func postsignup(w http.ResponseWriter, r *http.Request) {
 	username := r.PostFormValue("username")
 	password := r.PostFormValue("password")
+	role := r.PostFormValue("role")
 	dbclient, _ := datastorage.GetDataRouter().GetDb("common")
 	db := dbclient.GetMysqlClient()
-	stmt, _ := db.Prepare("INSERT INTO accounts VALUES(?,?);")
+	stmt, _ := db.Prepare("INSERT INTO accounts (username,password,role) VALUES(?,?,?);")
 	hash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	_, err := stmt.Exec(username, hash)
 	if err != nil {
 		log.Println("post signup error", err)
 		return
 	}
+	cookie, _ := r.Cookie("sessionid")
+	sessionid := cookie.Value
+	auth.GetGatekeeper().LoginSessionid(sessionid, role, w, r)
 }
 
 /*

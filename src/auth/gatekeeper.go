@@ -7,6 +7,9 @@ import (
 	"encoding/json"
 	"log"
 	"logger"
+	"net/http"
+	"time"
+	"utils"
 )
 
 /*
@@ -69,4 +72,25 @@ func (gk *Gatekeeper) CheckRole(sessionid string, role string) bool {
 		return true
 	}
 	return false
+}
+
+/*
+LoginSessionid function
+takes a sessionid, creates a session object that is authenticated
+*/
+func (gk *Gatekeeper) LoginSessionid(sessionid string, role string, w http.ResponseWriter, r *http.Request) {
+	session := &authmodels.Session{}
+	session.SetKey("isAuthenticated", "true")
+	session.SetKey("role", role)
+	session.SetKey("csrftoken", utils.GetRandStringb64())
+	rc, _ := datastorage.GetDataRouter().GetDb("sessions")
+	redisclient := rc.GetRedisClient()
+	redisclient.Set(sessionid, session.ToJSON(), 120*time.Minute)
+	if role == "admin" {
+		http.Redirect(w, r, "/secretadmin", http.StatusMovedPermanently)
+		return
+	} else if role == "user" {
+		http.Redirect(w, r, "/secret", http.StatusMovedPermanently)
+		return
+	}
 }

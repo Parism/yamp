@@ -25,6 +25,7 @@ func NewCookie() *http.Cookie {
 		_, err = redisclient.Get(bdecoded).Result()
 		if err == redis.Nil {
 			session := &models.Session{}
+			session.Sessionmap = make(map[string]string)
 			session.SetKey("role", "none")
 			session.SetKey("isAuthenticated", "false")
 			session.SetKey("csrftoken", utils.GetRandStringb64())

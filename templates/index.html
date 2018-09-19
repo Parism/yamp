@@ -7,10 +7,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 <body>
-    <form action="/dologin" method="POST">
-        <label>Όνομα </label><input name="username" placeholder="Όνομα χρήστη" type="text">
-        <label>Κωδικός</label><input name="password" placeholder="Κωδικός" type="password">
-        <input type="submit">
-    </form>
+    <div>
+        <p>Test Login</p>
+        <form action="/dologin" method="POST">
+            <label>Όνομα </label><input name="username" placeholder="Όνομα χρήστη" type="text">
+            <label>Κωδικός</label><input name="password" placeholder="Κωδικός" type="password">
+            <select name="role">
+                <option selected value="user">Απλός Χρήστης</option>
+                <option value="admin">Διαχειριστής</option>
+            </select>
+            <input type="hidden" name="csrftoken" value="test">
+            <input type="submit" value="Σύνδεση">
+        </form>
+    </div>
+    <div>
+        <p>Test signup</p>
+        <form action="/dosignup" method="POST">
+                <label>Όνομα </label><input name="username" placeholder="Όνομα χρήστη" type="text">
+                <label>Κωδικός</label><input name="password" placeholder="Κωδικός" type="password">
+                <input type="submit" value="Εγγραφή">    
+        </form>
+    </div>
 </body>
 </html>
