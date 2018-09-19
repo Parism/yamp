@@ -16,7 +16,7 @@
                 <option selected value="user">Απλός Χρήστης</option>
                 <option value="admin">Διαχειριστής</option>
             </select>
-            <input type="hidden" name="csrftoken" value="test">
+            <input type="hidden" name="csrftoken" value="{{.Context.Csrftoken}}">
             <input type="submit" value="Σύνδεση">
         </form>
     </div>
@@ -28,5 +28,6 @@
                 <input type="submit" value="Εγγραφή">    
         </form>
     </div>
+    {{.Context.Message}}
 </body>
 </html>

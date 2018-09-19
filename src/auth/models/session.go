@@ -19,7 +19,10 @@ GetKey function
 is a getter function for the session struct
 */
 func (s *Session) GetKey(key string) string {
-	return s.Sessionmap[key]
+	if value, exists := s.Sessionmap[key]; exists {
+		return value
+	}
+	return ""
 }
 
 /*

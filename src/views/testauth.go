@@ -29,6 +29,7 @@ func init() {
 		))
 	GetMux().HandleFunc("/",
 		middleware.WithMiddleware(index,
+			middleware.Time(),
 			middleware.NeedsSession(),
 		))
 }
@@ -70,7 +71,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 	data.Context = context
 	data.Data = "testdata"
 	t := template.Must(template.ParseFiles("./templates/index.html"))
-	log.Println("reached view function")
 	t.Execute(w, data)
 }
 
