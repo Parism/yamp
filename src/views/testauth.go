@@ -11,9 +11,12 @@ import (
 )
 
 func init() {
+	GetMux().HandleFunc("/secretadmin", middleware.WithMiddleware(secret,
+		middleware.IsAdmin(),
+	))
 	GetMux().HandleFunc("/secret",
 		middleware.WithMiddleware(secret,
-			middleware.WithLogin(),
+			middleware.IsUser(),
 		))
 	GetMux().HandleFunc("/", index)
 }
@@ -90,7 +93,13 @@ func postlogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func secret(w http.ResponseWriter, r *http.Request) {
-	t := template.New("index")
+	t := template.New("secret")
 	t, _ = t.ParseFiles("./templates/secret.html")
+	t.Execute(w, nil)
+}
+
+func secretadmin(w http.ResponseWriter, r *http.Request) {
+	t := template.New("secretadmin")
+	t, _ = t.ParseFiles("./templates/secretadmin.html")
 	t.Execute(w, nil)
 }

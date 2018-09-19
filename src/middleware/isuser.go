@@ -1,17 +1,19 @@
 package middleware
 
 import (
-	//"auth"
 	"auth"
 	"net/http"
 )
 
 /*
-WithLogin middleware
-checks if a request is authenticated
-will use additional middleware to check role
+IsAdmin middleware function
+passes the cookie value to the according gatekeeper function
+if the cookie is authenticated and the role of the user is admin
+then proceed to the next middleware
+Else, provide a message to the session
+and redirect to login page
 */
-func WithLogin() Middleware {
+func IsUser() Middleware {
 	return func(h http.HandlerFunc) http.HandlerFunc {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			cookie, err := r.Cookie("sessionid")
@@ -19,7 +21,7 @@ func WithLogin() Middleware {
 				http.Redirect(w, r, "/login", http.StatusMovedPermanently)
 				return
 			}
-			if auth.GetGatekeeper().Checkauth(cookie.Value) {
+			if auth.GetGatekeeper().CheckRole(cookie.Value, "user") {
 				h.ServeHTTP(w, r)
 				/*
 					cookie exists and is authenticated

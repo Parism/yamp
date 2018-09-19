@@ -1,8 +1,10 @@
 package auth
 
 import (
+	authmodels "auth/models"
 	"datastorage"
-	"datastorage/models/databaseclients"
+	dbmodels "datastorage/models/databaseclients"
+	"encoding/json"
 	"log"
 	"logger"
 )
@@ -14,7 +16,7 @@ check whether a request is authenticated or has
 sufficient role to perform an action
 */
 type Gatekeeper struct {
-	dbclient databaseclients.DbClient
+	dbclient dbmodels.DbClient
 }
 
 var gatekeeper *Gatekeeper
@@ -45,18 +47,26 @@ func (gk *Gatekeeper) SetDb(db string) {
 }
 
 /*
-Checkauth function
+CheckRole function
 contacts the sessions database
 searching for the cookie value
-if it exists it will return true
-else will return false
+and validating the fields isAuthenticated and role
 */
-func (gk *Gatekeeper) Checkauth(sessionid string) bool {
+func (gk *Gatekeeper) CheckRole(sessionid string, role string) bool {
 	redisclient := gk.dbclient.GetRedisClient()
 	res, err := redisclient.Get(sessionid).Result()
 	if err != nil {
 		return false
 	}
-	_ = res
-	return true
+	session := &authmodels.Session{}
+	err = json.Unmarshal([]byte(res), session)
+	if err != nil {
+		log.Println("Error unmarshaling retrieved session gatekeeper.go/CheckRole:64")
+		log.Println(err)
+		return false
+	}
+	if session.GetKey("isAuthenticated") == "true" && session.GetKey("role") == role {
+		return true
+	}
+	return false
 }
