@@ -4,7 +4,6 @@ import (
 	"auth"
 	"datastorage"
 	"html/template"
-	"log"
 	"middleware"
 	"net/http"
 	"utils"
@@ -97,8 +96,7 @@ func postsignup(w http.ResponseWriter, r *http.Request) {
 	hash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	_, err := stmt.Exec(username, hash, role)
 	if err != nil {
-		log.Println("post signup error", err)
-		messages.SetMessage(r, err.Error())
+		messages.SetMessage(r, "Το όνομα υπάρχει ήδη")
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
 	}
