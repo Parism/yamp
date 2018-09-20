@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"utils"
 
+	"messages"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -27,6 +29,12 @@ func init() {
 			middleware.NeedsSession(),
 			middleware.CsrfProtection(),
 		))
+	GetMux().HandleFunc("/dologin",
+		middleware.WithMiddleware(postlogin,
+			middleware.NeedsSession(),
+			middleware.CsrfProtection(),
+		))
+	GetMux().HandleFunc("/csrfdenied", csrfdenied)
 	GetMux().HandleFunc("/",
 		middleware.WithMiddleware(index,
 			middleware.Time(),
@@ -63,7 +71,7 @@ and the role middleware
 */
 func index(w http.ResponseWriter, r *http.Request) {
 	csrftoken := utils.GetSessionValue(r, "csrftoken")
-	message := utils.GetSessionValue(r, "message")
+	message := messages.GetMessage(r)
 	var context Context
 	context.Csrftoken = csrftoken
 	context.Message = message
@@ -87,14 +95,16 @@ func postsignup(w http.ResponseWriter, r *http.Request) {
 	db := dbclient.GetMysqlClient()
 	stmt, _ := db.Prepare("INSERT INTO accounts (username,password,role) VALUES(?,?,?);")
 	hash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	_, err := stmt.Exec(username, hash)
+	_, err := stmt.Exec(username, hash, role)
 	if err != nil {
 		log.Println("post signup error", err)
+		messages.SetMessage(r, err.Error())
+		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
 	}
 	cookie, _ := r.Cookie("sessionid")
 	sessionid := cookie.Value
-	auth.GetGatekeeper().LoginSessionid(sessionid, role, w, r)
+	auth.GetGatekeeper().Login(sessionid, role, w, r)
 }
 
 /*

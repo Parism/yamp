@@ -21,7 +21,7 @@ func IsAdmin() Middleware {
 				http.Redirect(w, r, "/login", http.StatusMovedPermanently)
 				return
 			}
-			if auth.GetGatekeeper().CheckRole(cookie.Value, "admin") {
+			if auth.GetGatekeeper().CheckRoleAndAuth(cookie.Value, "admin") {
 				h.ServeHTTP(w, r)
 				/*
 					cookie exists and is authenticated

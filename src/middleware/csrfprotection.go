@@ -30,6 +30,7 @@ func CsrfProtection() Middleware {
 				http.Redirect(w, r, "/csrfdenied", http.StatusMovedPermanently)
 				return
 			}
+			h.ServeHTTP(w, r)
 		})
 	}
 }

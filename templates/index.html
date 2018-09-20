@@ -12,10 +12,6 @@
         <form action="/dologin" method="POST">
             <label>Όνομα </label><input name="username" placeholder="Όνομα χρήστη" type="text">
             <label>Κωδικός</label><input name="password" placeholder="Κωδικός" type="password">
-            <select name="role">
-                <option selected value="user">Απλός Χρήστης</option>
-                <option value="admin">Διαχειριστής</option>
-            </select>
             <input type="hidden" name="csrftoken" value="{{.Context.Csrftoken}}">
             <input type="submit" value="Σύνδεση">
         </form>
@@ -25,6 +21,11 @@
         <form action="/dosignup" method="POST">
                 <label>Όνομα </label><input name="username" placeholder="Όνομα χρήστη" type="text">
                 <label>Κωδικός</label><input name="password" placeholder="Κωδικός" type="password">
+                <select name="role">
+                    <option selected value="user">Απλός Χρήστης</option>
+                    <option value="admin">Διαχειριστής</option>
+                </select>
+                <input type="hidden" name="csrftoken" value="{{.Context.Csrftoken}}">    
                 <input type="submit" value="Εγγραφή">    
         </form>
     </div>

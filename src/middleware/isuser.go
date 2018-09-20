@@ -6,7 +6,7 @@ import (
 )
 
 /*
-IsAdmin middleware function
+IsUser middleware function
 passes the cookie value to the according gatekeeper function
 if the cookie is authenticated and the role of the user is admin
 then proceed to the next middleware
@@ -21,7 +21,7 @@ func IsUser() Middleware {
 				http.Redirect(w, r, "/login", http.StatusMovedPermanently)
 				return
 			}
-			if auth.GetGatekeeper().CheckRole(cookie.Value, "user") {
+			if auth.GetGatekeeper().CheckRoleAndAuth(cookie.Value, "user") {
 				h.ServeHTTP(w, r)
 				/*
 					cookie exists and is authenticated

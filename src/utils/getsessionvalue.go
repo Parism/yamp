@@ -4,6 +4,7 @@ import (
 	"auth/models"
 	"datastorage"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -19,11 +20,19 @@ func GetSessionValue(r *http.Request, key string) string {
 		fix here.
 		nil pointer dereference
 	*/
-	cookie, _ := r.Cookie("sessionid")
+	cookie, err := r.Cookie("sessionid")
+	if err != nil {
+		log.Println("no cookie", err)
+		return ""
+	}
 	sessionid := cookie.Value
 	rc, _ := datastorage.GetDataRouter().GetDb("sessions")
 	redisclient := rc.GetRedisClient()
-	res, _ := redisclient.Get(sessionid).Result()
+	res, err := redisclient.Get(sessionid).Result()
+	if err != nil {
+		log.Println("no session in redis", err)
+		return ""
+	}
 	session := &models.Session{}
 	_ = json.Unmarshal([]byte(res), session)
 	return session.GetKey(key)
