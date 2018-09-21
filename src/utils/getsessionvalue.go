@@ -4,7 +4,6 @@ import (
 	"auth/models"
 	"datastorage"
 	"encoding/json"
-	"log"
 	"net/http"
 )
 
@@ -22,7 +21,6 @@ func GetSessionValue(r *http.Request, key string) string {
 	*/
 	cookie, err := r.Cookie("sessionid")
 	if err != nil {
-		log.Println("no cookie", err)
 		return ""
 	}
 	sessionid := cookie.Value
@@ -30,7 +28,6 @@ func GetSessionValue(r *http.Request, key string) string {
 	redisclient := rc.GetRedisClient()
 	res, err := redisclient.Get(sessionid).Result()
 	if err != nil {
-		log.Println("no session in redis", err)
 		return ""
 	}
 	session := &models.Session{}

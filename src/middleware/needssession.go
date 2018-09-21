@@ -18,10 +18,12 @@ func NeedsSession() Middleware {
 				cookie := auth.NewCookie() //cookie does not exist, create it
 				r.AddCookie(cookie)
 				http.SetCookie(w, cookie)
+				http.Redirect(w, r, r.URL.String(), http.StatusMovedPermanently)
 			} else if !auth.GetGatekeeper().SessionExists(cookie.Value) {
 				cookie := auth.NewCookie()
 				r.AddCookie(cookie)
 				http.SetCookie(w, cookie)
+				http.Redirect(w, r, r.URL.String(), http.StatusMovedPermanently)
 			}
 			//check if cookie exists in db. if not, create a new one
 			h.ServeHTTP(w, r)

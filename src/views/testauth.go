@@ -4,6 +4,7 @@ import (
 	"auth"
 	"datastorage"
 	"html/template"
+	"log"
 	"middleware"
 	"net/http"
 	"utils"
@@ -14,12 +15,14 @@ import (
 )
 
 func init() {
-	GetMux().HandleFunc("/secretadmin", middleware.WithMiddleware(secret,
+	GetMux().HandleFunc("/secretadmin", middleware.WithMiddleware(secretadmin,
+		middleware.Time(),
 		middleware.NeedsSession(),
 		middleware.IsAdmin(),
 	))
 	GetMux().HandleFunc("/secret",
 		middleware.WithMiddleware(secret,
+			middleware.Time(),
 			middleware.NeedsSession(),
 			middleware.IsUser(),
 		))
@@ -30,6 +33,11 @@ func init() {
 		))
 	GetMux().HandleFunc("/dologin",
 		middleware.WithMiddleware(postlogin,
+			middleware.NeedsSession(),
+			middleware.CsrfProtection(),
+		))
+	GetMux().HandleFunc("/logout",
+		middleware.WithMiddleware(logout,
 			middleware.NeedsSession(),
 			middleware.CsrfProtection(),
 		))
@@ -96,6 +104,7 @@ func postsignup(w http.ResponseWriter, r *http.Request) {
 	hash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	_, err := stmt.Exec(username, hash, role)
 	if err != nil {
+		log.Println(err)
 		messages.SetMessage(r, "Το όνομα υπάρχει ήδη")
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
@@ -117,14 +126,33 @@ func postlogin(w http.ResponseWriter, r *http.Request) {
 	//offload the login function to the gatekeeper
 }
 
+func logout(w http.ResponseWriter, r *http.Request) {
+	auth.GetGatekeeper().Logout(w, r)
+}
+
 func secret(w http.ResponseWriter, r *http.Request) {
-	t := template.New("secret")
-	t, _ = t.ParseFiles("./templates/secret.html")
-	t.Execute(w, nil)
+	context := loadcontext(r)
+	data := Data{}
+	data.Context = context
+	data.Data = "testdata"
+	t := template.Must(template.ParseFiles("./templates/secret.html"))
+	t.Execute(w, data)
 }
 
 func secretadmin(w http.ResponseWriter, r *http.Request) {
-	t := template.New("secretadmin")
-	t, _ = t.ParseFiles("./templates/secretadmin.html")
-	t.Execute(w, nil)
+	context := loadcontext(r)
+	data := Data{}
+	data.Context = context
+	data.Data = "testdata"
+	t := template.Must(template.ParseFiles("./templates/secretadmin.html"))
+	t.Execute(w, data)
+}
+
+func loadcontext(r *http.Request) Context {
+	csrftoken := utils.GetSessionValue(r, "csrftoken")
+	message := messages.GetMessage(r)
+	var context Context
+	context.Csrftoken = csrftoken
+	context.Message = message
+	return context
 }

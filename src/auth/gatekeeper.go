@@ -52,7 +52,7 @@ func (gk *Gatekeeper) SetDb(db string) {
 }
 
 /*
-CheckRole function
+CheckRoleAndAuth function
 contacts the sessions database
 searching for the cookie value
 and validating the fields isAuthenticated and role
@@ -96,6 +96,7 @@ takes a sessionid, creates a session object that is authenticated
 */
 func (gk *Gatekeeper) StoreSessionToDb(sessionid string, role string, w http.ResponseWriter, r *http.Request) {
 	session := &authmodels.Session{}
+	session.Sessionmap = make(map[string]string)
 	session.SetKey("isAuthenticated", "true")
 	session.SetKey("role", role)
 	session.SetKey("csrftoken", utils.GetRandStringb64())
@@ -140,4 +141,28 @@ func (gk *Gatekeeper) Login(sessionid, role string, w http.ResponseWriter, r *ht
 		return
 	}
 	gk.StoreSessionToDb(sessionid, role, w, r)
+}
+
+/*
+Logout function of gatekeeper
+responsible to logout a user
+get his sessionid
+fetch the session from the sessions db
+change the value isAuthenticated to false
+and redirect him to the / page
+*/
+func (gk *Gatekeeper) Logout(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := r.Cookie("sessionid")
+	sessionid := cookie.Value
+	rc, _ := datastorage.GetDataRouter().GetDb("sessions")
+	redisclient := rc.GetRedisClient()
+	jsonsession, _ := redisclient.Get(sessionid).Result()
+	session := &authmodels.Session{}
+	session.FromJSON(jsonsession)
+	log.Println(sessionid, session)
+	session.SetKey("isAuthenticated", "false")
+	log.Println(sessionid, session)
+	err := redisclient.Set(sessionid, session.ToJSON(), 2*time.Minute)
+	log.Println(err)
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 }
