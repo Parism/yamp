@@ -102,7 +102,7 @@ func (gk *Gatekeeper) StoreSessionToDb(sessionid string, role string, w http.Res
 	session.SetKey("csrftoken", utils.GetRandStringb64())
 	rc, _ := datastorage.GetDataRouter().GetDb("sessions")
 	redisclient := rc.GetRedisClient()
-	redisclient.Set(sessionid, session.ToJSON(), 5*time.Minute)
+	redisclient.Set(sessionid, session.ToJSON(), 20*time.Minute)
 	if role == "admin" {
 		http.Redirect(w, r, "/secretadmin", http.StatusMovedPermanently)
 		return
@@ -119,25 +119,28 @@ provided are valid or not
 if they are the session is stored as authenticated
 if not the user gets redirected to /login
 */
-func (gk *Gatekeeper) Login(sessionid, role string, w http.ResponseWriter, r *http.Request) {
+func (gk *Gatekeeper) Login(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := r.Cookie("sessionid")
+	sessionid := cookie.Value
 	mc, _ := datastorage.GetDataRouter().GetDb("common")
 	mysqlclient := mc.GetMysqlClient()
-	res, err := mysqlclient.Query("SELECT password from accounts where username=?", r.PostFormValue("username"))
+	res, err := mysqlclient.Query("SELECT password,role from accounts where username=?", r.PostFormValue("username"))
 	if err != nil {
 		log.Println(err, "Login gatekeeper function")
-		http.Redirect(w, r, "/login", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
 	}
-	var password string
+	var password, role string
 	if res.Next() {
-		err = res.Scan(&password)
+		err = res.Scan(&password, &role)
 		if err != nil {
 			log.Println("error fetching password", err)
 		}
+
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(password), []byte(r.PostFormValue("password")))
 	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
 	}
 	gk.StoreSessionToDb(sessionid, role, w, r)
@@ -159,10 +162,7 @@ func (gk *Gatekeeper) Logout(w http.ResponseWriter, r *http.Request) {
 	jsonsession, _ := redisclient.Get(sessionid).Result()
 	session := &authmodels.Session{}
 	session.FromJSON(jsonsession)
-	log.Println(sessionid, session)
 	session.SetKey("isAuthenticated", "false")
-	log.Println(sessionid, session)
-	err := redisclient.Set(sessionid, session.ToJSON(), 2*time.Minute)
-	log.Println(err)
+	redisclient.Set(sessionid, session.ToJSON(), 20*time.Minute)
 	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 }

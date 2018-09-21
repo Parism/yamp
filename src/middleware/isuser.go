@@ -3,6 +3,7 @@ package middleware
 import (
 	"auth"
 	"net/http"
+	"utils"
 )
 
 /*
@@ -18,7 +19,7 @@ func IsUser() Middleware {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			cookie, err := r.Cookie("sessionid")
 			if err != nil { //cookie does not exist, redirect to /login
-				http.Redirect(w, r, "/login", http.StatusMovedPermanently)
+				http.Redirect(w, r, "/", http.StatusMovedPermanently)
 				return
 			}
 			if auth.GetGatekeeper().CheckRoleAndAuth(cookie.Value, "user") {
@@ -32,7 +33,7 @@ func IsUser() Middleware {
 					cookie exists but is not authenticated
 					redirect to /login
 				*/
-				http.Redirect(w, r, "/login", http.StatusMovedPermanently)
+				http.Redirect(w, r, utils.RedirectByRole(r), http.StatusMovedPermanently)
 			}
 		})
 	}

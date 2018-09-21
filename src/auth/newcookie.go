@@ -29,7 +29,7 @@ func NewCookie() *http.Cookie {
 			session.SetKey("role", "none")
 			session.SetKey("isAuthenticated", "false")
 			session.SetKey("csrftoken", utils.GetRandStringb64())
-			redisclient.SetNX(bdecoded, session.ToJSON(), 120*time.Minute)
+			redisclient.SetNX(bdecoded, session.ToJSON(), 20*time.Minute)
 			break
 		}
 	}

@@ -3,6 +3,7 @@ package middleware
 import (
 	"auth"
 	"net/http"
+	"utils"
 )
 
 /*
@@ -32,7 +33,7 @@ func IsAdmin() Middleware {
 					cookie exists but is not authenticated
 					redirect to /login
 				*/
-				http.Redirect(w, r, "/", http.StatusMovedPermanently)
+				http.Redirect(w, r, utils.RedirectByRole(r), http.StatusMovedPermanently)
 			}
 		})
 	}

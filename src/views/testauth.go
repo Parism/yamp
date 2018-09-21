@@ -109,9 +109,7 @@ func postsignup(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
 	}
-	cookie, _ := r.Cookie("sessionid")
-	sessionid := cookie.Value
-	auth.GetGatekeeper().Login(sessionid, role, w, r)
+	auth.GetGatekeeper().Login(w, r)
 }
 
 /*
@@ -124,6 +122,7 @@ and then check whether the token is authenticated or not
 */
 func postlogin(w http.ResponseWriter, r *http.Request) {
 	//offload the login function to the gatekeeper
+	auth.GetGatekeeper().Login(w, r)
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {

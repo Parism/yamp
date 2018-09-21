@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-	"log"
 )
 
 /*
@@ -61,8 +60,5 @@ func (s *Session) ToJSON() string {
 FromJSON function gets a json string and builds the session
 */
 func (s *Session) FromJSON(res string) {
-	err := json.Unmarshal([]byte(res), s)
-	if err != nil {
-		log.Println("error unmarshaling session")
-	}
+	json.Unmarshal([]byte(res), s)
 }
