@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{.Context.User}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/diaxeiristiko">Αρχική</a></li>
+            <li><a href="/xrhstes">Χρήστες</a></li>
+            <li><a href="/logout">Αποσύνδεση</a></li>
+        </ul>
+    </nav>
+    <p>Καλώς ήρθες {{.Context.User}}</p>
+</body>
+</html>

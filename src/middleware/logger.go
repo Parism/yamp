@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
 	"time"
 )
@@ -22,5 +23,5 @@ func Time() Middleware {
 
 func stopTimer(start time.Time, w http.ResponseWriter, r *http.Request) {
 	total := time.Since(start)
-	w.Write([]byte(total.String()))
+	log.Println(total, r.URL.String())
 }

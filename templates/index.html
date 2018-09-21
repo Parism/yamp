@@ -3,19 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Hello world</title>
+    <title>Διαγόρας</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 <body>
     <div>
-        <p>Test Login</p>
-        <form action="/dologin" method="POST">
+        <p>Σύνδεση</p>
+        <form action="/login" method="POST">
             <label>Όνομα </label><input name="username" placeholder="Όνομα χρήστη" type="text">
             <label>Κωδικός</label><input name="password" placeholder="Κωδικός" type="password">
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
             <input type="submit" value="Σύνδεση">
         </form>
     </div>
+    <p>Δοκιμαστικά διαπιστευτήρια:</p>
+    <p>Διαχειριστής: val:1234</p>
+    <p>Απλός χρήστης: val1:1234</p>
     <div>
         <p>Test signup</p>
         <form action="/dosignup" method="POST">

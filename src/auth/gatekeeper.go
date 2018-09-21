@@ -94,20 +94,21 @@ func (gk *Gatekeeper) SessionExists(sessionid string) bool {
 StoreSessionToDb function
 takes a sessionid, creates a session object that is authenticated
 */
-func (gk *Gatekeeper) StoreSessionToDb(sessionid string, role string, w http.ResponseWriter, r *http.Request) {
+func (gk *Gatekeeper) StoreSessionToDb(sessionid, role, username string, w http.ResponseWriter, r *http.Request) {
 	session := &authmodels.Session{}
 	session.Sessionmap = make(map[string]string)
 	session.SetKey("isAuthenticated", "true")
 	session.SetKey("role", role)
+	session.SetKey("username", username)
 	session.SetKey("csrftoken", utils.GetRandStringb64())
 	rc, _ := datastorage.GetDataRouter().GetDb("sessions")
 	redisclient := rc.GetRedisClient()
 	redisclient.Set(sessionid, session.ToJSON(), 20*time.Minute)
 	if role == "admin" {
-		http.Redirect(w, r, "/secretadmin", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/diaxeiristiko", http.StatusMovedPermanently)
 		return
 	} else if role == "user" {
-		http.Redirect(w, r, "/secret", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/dashboard", http.StatusMovedPermanently)
 		return
 	}
 }
@@ -143,7 +144,7 @@ func (gk *Gatekeeper) Login(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
 	}
-	gk.StoreSessionToDb(sessionid, role, w, r)
+	gk.StoreSessionToDb(sessionid, role, r.PostFormValue("username"), w, r)
 }
 
 /*

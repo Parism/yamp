@@ -3,17 +3,15 @@ package views
 import (
 	"auth"
 	"datastorage"
-	"html/template"
 	"log"
-	"middleware"
 	"net/http"
-	"utils"
 
 	"messages"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
+/*
 func init() {
 	GetMux().HandleFunc("/secretadmin", middleware.WithMiddleware(secretadmin,
 		middleware.Time(),
@@ -42,11 +40,6 @@ func init() {
 			middleware.CsrfProtection(),
 		))
 	GetMux().HandleFunc("/csrfdenied", csrfdenied)
-	GetMux().HandleFunc("/",
-		middleware.WithMiddleware(index,
-			middleware.Time(),
-			middleware.NeedsSession(),
-		))
 }
 
 /*
@@ -76,18 +69,6 @@ and secret with role function
 will be used to test the gatekeeper
 and the role middleware
 */
-func index(w http.ResponseWriter, r *http.Request) {
-	csrftoken := utils.GetSessionValue(r, "csrftoken")
-	message := messages.GetMessage(r)
-	var context Context
-	context.Csrftoken = csrftoken
-	context.Message = message
-	data := Data{}
-	data.Context = context
-	data.Data = "testdata"
-	t := template.Must(template.ParseFiles("./templates/index.html"))
-	t.Execute(w, data)
-}
 
 /*
 postsignup function
@@ -110,48 +91,4 @@ func postsignup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	auth.GetGatekeeper().Login(w, r)
-}
-
-/*
-postlogin function
-asks gatekeeper if the credentials provided are ok
-if they are redirects to secret
-if not must return message to session and redirect to login page
-either way a session token must be generated
-and then check whether the token is authenticated or not
-*/
-func postlogin(w http.ResponseWriter, r *http.Request) {
-	//offload the login function to the gatekeeper
-	auth.GetGatekeeper().Login(w, r)
-}
-
-func logout(w http.ResponseWriter, r *http.Request) {
-	auth.GetGatekeeper().Logout(w, r)
-}
-
-func secret(w http.ResponseWriter, r *http.Request) {
-	context := loadcontext(r)
-	data := Data{}
-	data.Context = context
-	data.Data = "testdata"
-	t := template.Must(template.ParseFiles("./templates/secret.html"))
-	t.Execute(w, data)
-}
-
-func secretadmin(w http.ResponseWriter, r *http.Request) {
-	context := loadcontext(r)
-	data := Data{}
-	data.Context = context
-	data.Data = "testdata"
-	t := template.Must(template.ParseFiles("./templates/secretadmin.html"))
-	t.Execute(w, data)
-}
-
-func loadcontext(r *http.Request) Context {
-	csrftoken := utils.GetSessionValue(r, "csrftoken")
-	message := messages.GetMessage(r)
-	var context Context
-	context.Csrftoken = csrftoken
-	context.Message = message
-	return context
 }

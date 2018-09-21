@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 	"views"
+	_ "views/adminviews"
+	_ "views/adminviews/create"
+	_ "views/userviews"
 )
 
 func main() {

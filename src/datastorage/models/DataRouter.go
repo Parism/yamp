@@ -21,6 +21,7 @@ and creates connections to those databases
 type DataRouter struct {
 	databaseConfigurations []DatabaseConfig
 	databases              map[string]databaseclients.DbClient
+	statements             map[string]*sql.Stmt
 }
 
 /*
@@ -41,6 +42,11 @@ func (dr *DataRouter) GetDb(dbID string) (db databaseclients.DbClient, err error
 		return dr.databases[dbID], nil
 	}
 	return nil, errors.New("Database does not exist in DataRouter")
+}
+
+func (dr *DataRouter) BuildStatements() {
+	stmtExp := []string{}
+
 }
 
 /*
@@ -85,6 +91,14 @@ func (dr *DataRouter) OpenDatabaseConnections() {
 		}
 
 	}
+}
+
+/*
+GetStmt function
+returns an already prepared statement
+*/
+func (dr *DataRouter) GetStmt(stmt string) *sql.Stmt {
+	return dr.statements["insert_user"]
 }
 
 /*
