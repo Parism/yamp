@@ -11,16 +11,11 @@ import (
 )
 
 func init() {
-	views.GetMux().HandleFunc("/xrhstes", middleware.WithMiddleware(listusers,
+	views.GetMux().HandleFunc("/users", middleware.WithMiddleware(listusers,
 		middleware.Time(),
 		middleware.NeedsSession(),
 		middleware.IsAdmin(),
 	))
-}
-
-type data struct {
-	Context utils.Context
-	Data    interface{}
 }
 
 func listusers(w http.ResponseWriter, r *http.Request) {
@@ -41,9 +36,10 @@ func listusers(w http.ResponseWriter, r *http.Request) {
 			&user.Db)
 		users = append(users, user)
 	}
-	data := data{}
+	res.Close()
+	data := utils.Data{}
 	data.Context = context
 	data.Data = users
-	t := template.Must(template.ParseFiles("./templates/adminviews/xrhstes.html"))
+	t := template.Must(template.ParseFiles("./templates/adminviews/users.html"))
 	t.Execute(w, data)
 }

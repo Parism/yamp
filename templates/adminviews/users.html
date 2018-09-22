@@ -9,16 +9,16 @@
 <body>
     <nav>
         <ul>
-            <li><a href="/diaxeiristiko">Αρχική</a></li>
-            <li><a href="/xrhstes">Χρήστες</a></li>
-            <li><a href="/logout">Αποσύνδεση</a></li>
+            <li><a href="diaxeiristiko">Αρχική</a></li>
+            <li><a href="xrhstes">Χρήστες</a></li>
+            <li><a href="logout">Αποσύνδεση</a></li>
         </ul>
     </nav>
     <h3>
         Δημιουργία χρήστη
     </h3>
     {{.Context.Message}}
-    <form action="/cuser" method="POST">
+    <form action="cuser" method="POST">
         <input type="text" name="username" required>
         <input type="password" name="password1" required>
         <input type="password" name="password2" required>
@@ -40,7 +40,7 @@
         <input type="submit" value="Δημιουργία">
     </form>
     {{range .Data}}
-    <a href="/xrhsths/{{.Username}}">{{.Username}} - {{.Role}}</a>
+    <a href="retrieveuser?username={{.Username}}">{{.Username}} - {{.Role}}</a>
     {{end}}
 </body>
 </html>

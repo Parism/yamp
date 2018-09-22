@@ -25,6 +25,57 @@ type DataRouter struct {
 }
 
 /*
+StmtExpr struct
+is used to aggregate all needed
+data to build and index a prepared statement
+*/
+type StmtExpr struct {
+	Query string
+	Db    string
+	Index string
+}
+
+/*
+BuildStatements function
+prepares the statement
+*/
+func (dr *DataRouter) BuildStatements() {
+	stmtArray := []StmtExpr{
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO accounts (username,password,role,db) VALUES(?,?,?,?);",
+			Index: "insert_new_user",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM accounts where username=?;",
+			Index: "delete_user",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "UPDATE accounts SET password=? WHERE username=?;",
+			Index: "update_password",
+		},
+	}
+	dr.statements = make(map[string]*sql.Stmt)
+	var stmt *sql.Stmt
+	for _, value := range stmtArray {
+		db, _ := dr.GetDb(value.Db)
+		dbm := db.GetMysqlClient()
+		stmt, _ = dbm.Prepare(value.Query)
+		dr.statements[value.Index] = stmt
+	}
+}
+
+/*
+GetStmt function
+returns an already prepared statement
+*/
+func (dr *DataRouter) GetStmt(stm string) *sql.Stmt {
+	return dr.statements[stm]
+}
+
+/*
 SetDb function
 inserts a key-value pair in the datarouter
 */
@@ -42,11 +93,6 @@ func (dr *DataRouter) GetDb(dbID string) (db databaseclients.DbClient, err error
 		return dr.databases[dbID], nil
 	}
 	return nil, errors.New("Database does not exist in DataRouter")
-}
-
-func (dr *DataRouter) BuildStatements() {
-	stmtExp := []string{}
-
 }
 
 /*
@@ -91,14 +137,6 @@ func (dr *DataRouter) OpenDatabaseConnections() {
 		}
 
 	}
-}
-
-/*
-GetStmt function
-returns an already prepared statement
-*/
-func (dr *DataRouter) GetStmt(stmt string) *sql.Stmt {
-	return dr.statements["insert_user"]
 }
 
 /*

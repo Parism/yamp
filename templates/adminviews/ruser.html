@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{.Data.Username}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="diaxeiristiko">Αρχική</a></li>
+            <li><a href="users">Χρήστες</a></li>
+            <li><a href="logout">Αποσύνδεση</a></li>
+        </ul>
+    </nav>
+    <div>
+        <h2>{{.Data.Username}}</h2>
+        <p>{{.Data.Role}}</p>
+        <p>{{.Data.Db}}</p>
+    </div>
+    <div>{{.Context.Message}}</div>
+    <div>
+        <form action="changepass" method="POST">
+            <input type="password" name="password1" placeholder="Κωδικός">
+            <input type="password" name="password2" placeholder="Επιβεβαίωση κωδικού">
+            <input type="hidden" name="username" value={{.Data.Username}}>
+            <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+            <input type="submit" value="Αλλαγή κωδικού">
+        </form>
+        <form action="deleteuser" method="POST">
+                <input type="hidden" name="username" value={{.Data.Username}}>
+                <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+                <input type="submit" value="Διαγραφή λογαριασμού">    
+        </form>
+    </div>
+</body>
+</html>

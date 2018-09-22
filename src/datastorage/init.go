@@ -8,9 +8,9 @@ var dataRouter *models.DataRouter
 
 func init() {
 	dataRouter = &models.DataRouter{}
-	dataRouter.BuildStatements()
 	dataRouter.LoadDatabases()
 	dataRouter.OpenDatabaseConnections()
+	dataRouter.BuildStatements()
 }
 
 /*

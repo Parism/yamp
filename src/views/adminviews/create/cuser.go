@@ -34,24 +34,22 @@ func user(w http.ResponseWriter, r *http.Request) {
 	dbase := r.PostFormValue("db")
 	if role == "admin" && dbase != "nil" {
 		messages.SetMessage(r, "Οι διαχειριστές δεν ανήκουν σε διμοιρίες")
-		http.Redirect(w, r, "/xrhstes", http.StatusMovedPermanently)
+		http.Redirect(w, r, "users", http.StatusMovedPermanently)
 		return
 	}
 	if password1 != password2 {
 		messages.SetMessage(r, "Οι 2 κωδικοί χρηστών δεν ταιριάζουν")
-		http.Redirect(w, r, "/xrhstes", http.StatusMovedPermanently)
+		http.Redirect(w, r, "users", http.StatusMovedPermanently)
 		return
 	}
-	dbclient, _ := datastorage.GetDataRouter().GetDb("common")
-	db := dbclient.GetMysqlClient()
-	stmt, _ := db.Prepare("INSERT INTO accounts (username,password,role,db) VALUES(?,?,?,?);")
+	stmt := datastorage.GetDataRouter().GetStmt("insert_new_user")
 	hash, _ := bcrypt.GenerateFromPassword([]byte(password1), bcrypt.DefaultCost)
 	_, err := stmt.Exec(username, hash, role, dbase)
 	if err != nil {
 		log.Println(err)
 		messages.SetMessage(r, "Το όνομα υπάρχει ήδη")
-		http.Redirect(w, r, "/xrhstes", http.StatusMovedPermanently)
+		http.Redirect(w, r, "users", http.StatusMovedPermanently)
 		return
 	}
-	http.Redirect(w, r, "/xrhstes", http.StatusMovedPermanently)
+	http.Redirect(w, r, "users", http.StatusMovedPermanently)
 }

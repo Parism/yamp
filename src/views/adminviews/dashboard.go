@@ -17,12 +17,12 @@ func init() {
 }
 
 /*
-dashboard function
+Diaxeiristiko function
 serves as the function to the url /dashboardadmin
 */
 func Diaxeiristiko(w http.ResponseWriter, r *http.Request) {
 	context := utils.LoadContext(r)
-	data := utils.DummyData{}
+	data := utils.Data{}
 	data.Context = context
 	t := template.Must(template.ParseFiles("./templates/adminviews/dashboard.html"))
 	t.Execute(w, data)

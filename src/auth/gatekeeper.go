@@ -137,8 +137,8 @@ func (gk *Gatekeeper) Login(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("error fetching password", err)
 		}
-
 	}
+	res.Close()
 	err = bcrypt.CompareHashAndPassword([]byte(password), []byte(r.PostFormValue("password")))
 	if err != nil {
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
@@ -156,6 +156,7 @@ change the value isAuthenticated to false
 and redirect him to the / page
 */
 func (gk *Gatekeeper) Logout(w http.ResponseWriter, r *http.Request) {
+	log.Println("Gatekeeper logout")
 	cookie, _ := r.Cookie("sessionid")
 	sessionid := cookie.Value
 	rc, _ := datastorage.GetDataRouter().GetDb("sessions")
