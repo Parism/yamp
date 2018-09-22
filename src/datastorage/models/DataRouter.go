@@ -56,6 +56,16 @@ func (dr *DataRouter) BuildStatements() {
 			Query: "UPDATE accounts SET password=? WHERE username=?;",
 			Index: "update_password",
 		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM typoiadeiwn where id=?;",
+			Index: "delete_typos_adeias",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO typoiadeiwn (name) VALUES(?);",
+			Index: "create_typos_adeias",
+		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)
 	var stmt *sql.Stmt

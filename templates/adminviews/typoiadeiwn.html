@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{.Context.User}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="diaxeiristiko">Αρχική</a></li>
+            <li><a href="users">Χρήστες</a></li>
+            <li><a href="typoiadeiwn">Τύποι αδειών</a></li>
+            <li><a href="logout">Αποσύνδεση</a></li>
+        </ul>
+    </nav>
+    <h3>Δημιουργία τύπου άδειας</h3>
+    {{.Context.Message}}
+    <div>
+        <form action="ctyposadeias" method="POST">
+            <input type="text" name="typosadeias" placeholder="Τύπος άδειας" required>
+            <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+            <input type="submit" value="Δημιουργία">
+        </form>
+    </div>
+    <h3>Λίστα τύπων άδειας</h3>
+    <div>
+        {{$csrftoken := .Context.Csrftoken}}
+        {{range .Data}}
+        <p>{{.TyposAdeias}}</p>
+        <form action="dadeia" method="POST">
+            <input type="hidden" name="csrftoken" value={{$csrftoken}}>
+            <input type="hidden" name="id" value={{.ID}}>
+            <input type="submit" value="Διαγραφή">
+        </form>
+        {{end}}
+    </div>
+</body>
+</html>
