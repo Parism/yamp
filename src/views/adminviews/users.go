@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	views.GetMux().HandleFunc("/users", middleware.WithMiddleware(listusers,
+	views.GetMux().HandleFunc("/listusers", middleware.WithMiddleware(listusers,
 		middleware.Time(),
 		middleware.NeedsSession(),
 		middleware.IsAdmin(),
@@ -25,7 +25,7 @@ func listusers(w http.ResponseWriter, r *http.Request) {
 	res, err := mysqlclient.Query("select username,role,db from accounts order by role asc, username asc")
 	if err != nil {
 		context.Message = err.Error()
-		http.Redirect(w, r, "/xrhstes", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/listusers", http.StatusMovedPermanently)
 	}
 	var users []models.User
 	var user models.User
