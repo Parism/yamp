@@ -2,10 +2,10 @@ package create
 
 import (
 	"datastorage"
-	"log"
 	"messages"
 	"middleware"
 	"net/http"
+	"utils"
 	"views"
 
 	"golang.org/x/crypto/bcrypt"
@@ -31,25 +31,17 @@ func user(w http.ResponseWriter, r *http.Request) {
 	password1 := r.PostFormValue("password1")
 	password2 := r.PostFormValue("password2")
 	role := r.PostFormValue("role")
-	dbase := r.PostFormValue("db")
-	if role == "admin" && dbase != "nil" {
-		messages.SetMessage(r, "Οι διαχειριστές δεν ανήκουν σε διμοιρίες")
-		http.Redirect(w, r, "users", http.StatusMovedPermanently)
-		return
-	}
 	if password1 != password2 {
-		messages.SetMessage(r, "Οι 2 κωδικοί χρηστών δεν ταιριάζουν")
-		http.Redirect(w, r, "users", http.StatusMovedPermanently)
+		utils.RedirectWithError(w, r, "listusers", "Οι 2 κωδικοί χρηστών δεν ταιριάζουν", nil)
 		return
 	}
 	stmt := datastorage.GetDataRouter().GetStmt("insert_new_user")
 	hash, _ := bcrypt.GenerateFromPassword([]byte(password1), bcrypt.DefaultCost)
-	_, err := stmt.Exec(username, hash, role, dbase)
+	_, err := stmt.Exec(username, hash, role)
 	if err != nil {
-		log.Println(err)
-		messages.SetMessage(r, "Το όνομα υπάρχει ήδη")
-		http.Redirect(w, r, "users", http.StatusMovedPermanently)
+		utils.RedirectWithError(w, r, "listusers", "Το όνομα υπάρχει ήδη", err)
 		return
 	}
-	http.Redirect(w, r, "users", http.StatusMovedPermanently)
+	messages.SetMessage(r, "Επιτυχής εισαγωγή χρήστη")
+	http.Redirect(w, r, "retrieveuser?username="+username, http.StatusMovedPermanently)
 }

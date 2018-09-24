@@ -4,6 +4,7 @@ import (
 	"auth"
 	"net/http"
 	"utils"
+	"variables"
 )
 
 /*
@@ -22,7 +23,7 @@ func IsAdmin() Middleware {
 				http.Redirect(w, r, "/", http.StatusMovedPermanently)
 				return
 			}
-			if auth.GetGatekeeper().CheckRoleAndAuth(cookie.Value, "admin") {
+			if auth.GetGatekeeper().CheckRoleAndAuth(cookie.Value) >= variables.ADMIN {
 				h.ServeHTTP(w, r)
 				/*
 					cookie exists and is authenticated

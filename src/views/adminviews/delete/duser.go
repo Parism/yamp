@@ -31,5 +31,5 @@ func Duser(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/retrieveuser?username="+username, http.StatusMovedPermanently)
 		return
 	}
-	http.Redirect(w, r, "/users", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/listusers", http.StatusMovedPermanently)
 }

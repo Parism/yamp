@@ -22,7 +22,7 @@ func listusers(w http.ResponseWriter, r *http.Request) {
 	context := utils.LoadContext(r)
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	mysqlclient := db.GetMysqlClient()
-	res, err := mysqlclient.Query("select username,role,db from accounts order by role asc, username asc")
+	res, err := mysqlclient.Query("SELECT username,rolestring from accounts join roles on accounts.role=roles.role order by roles.role desc, accounts.username asc")
 	if err != nil {
 		context.Message = err.Error()
 		http.Redirect(w, r, "/listusers", http.StatusMovedPermanently)
@@ -32,8 +32,7 @@ func listusers(w http.ResponseWriter, r *http.Request) {
 	for res.Next() {
 		err = res.Scan(
 			&user.Username,
-			&user.Role,
-			&user.Db)
+			&user.Role)
 		users = append(users, user)
 	}
 	res.Close()

@@ -18,20 +18,6 @@
     </div>
     <p>Δοκιμαστικά διαπιστευτήρια:</p>
     <p>Διαχειριστής: val:1234</p>
-    <p>Απλός χρήστης: val1:1234</p>
-    <div>
-        <p>Test signup</p>
-        <form action="/dosignup" method="POST">
-                <label>Όνομα </label><input name="username" placeholder="Όνομα χρήστη" type="text">
-                <label>Κωδικός</label><input name="password" placeholder="Κωδικός" type="password">
-                <select name="role">
-                    <option selected value="user">Απλός Χρήστης</option>
-                    <option value="admin">Διαχειριστής</option>
-                </select>
-                <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>    
-                <input type="submit" value="Εγγραφή">    
-        </form>
-    </div>
-    {{.Context.Message}}
+    <p>{{.Context.Message}}</p>
 </body>
 </html>

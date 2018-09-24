@@ -36,7 +36,7 @@ func NewCookie() *http.Cookie {
 	var cookie = &http.Cookie{
 		Name:     "sessionid",
 		Value:    bdecoded,
-		Expires:  time.Now().Add(120 * time.Minute),
+		Expires:  time.Now().Add(20 * time.Minute),
 		HttpOnly: true,
 	}
 	return cookie

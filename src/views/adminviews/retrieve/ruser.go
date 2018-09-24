@@ -14,8 +14,8 @@ import (
 func init() {
 	views.GetMux().HandleFunc("/retrieveuser", middleware.WithMiddleware(ruser,
 		middleware.Time(),
-		//middleware.NeedsSession(),
-		//middleware.IsAdmin(),
+		middleware.NeedsSession(),
+		middleware.IsAdmin(),
 	))
 }
 
@@ -23,7 +23,7 @@ func ruser(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
-	res, err := dbc.Query("SELECT username,role,db from accounts where username =?", username)
+	res, err := dbc.Query("SELECT username,rolestring from accounts join roles on accounts.role=roles.role where username =?", username)
 	if err != nil {
 		messages.SetMessage(r, "Invalid query")
 		http.Redirect(w, r, "/users", http.StatusMovedPermanently)
@@ -33,7 +33,6 @@ func ruser(w http.ResponseWriter, r *http.Request) {
 		_ = res.Scan(
 			&user.Username,
 			&user.Role,
-			&user.Db,
 		)
 	}
 	data := utils.Data{}

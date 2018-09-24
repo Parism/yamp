@@ -43,7 +43,7 @@ func (dr *DataRouter) BuildStatements() {
 	stmtArray := []StmtExpr{
 		StmtExpr{
 			Db:    "common",
-			Query: "INSERT INTO accounts (username,password,role,db) VALUES(?,?,?,?);",
+			Query: "INSERT INTO accounts (username,password,role) VALUES(?,?,?);",
 			Index: "insert_new_user",
 		},
 		StmtExpr{

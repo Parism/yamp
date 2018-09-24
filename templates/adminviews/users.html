@@ -24,18 +24,9 @@
         <input type="password" name="password1" required>
         <input type="password" name="password2" required>
         <select name="role">
-            <option value="user" selected>Απλός χρήστης</option>
-            <option value="admin">Διαχειριστής</option>
-        </select>
-        <select name="db">
-            <option value="1/1">1/1</option>
-            <option value="2/1">2/1</option>
-            <option value="3/1">3/1</option>
-            <option value="1/2">1/2</option>
-            <option value="2/2">2/2</option>
-            <option value="3/2">3/2</option>
-            <option value="0">0</option>
-            <option value="nil">Καμία</option>
+            <option value="1" selected>Απλός χρήστης</option>
+            <option value="2">Μέσος χρήστης</option>
+            <option value="3">Διαχειριστής</option>
         </select>
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
         <input type="submit" value="Δημιουργία">

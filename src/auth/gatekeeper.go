@@ -7,9 +7,12 @@ import (
 	"encoding/json"
 	"log"
 	"logger"
+	"messages"
 	"net/http"
+	"strconv"
 	"time"
 	"utils"
+	"variables"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -57,23 +60,25 @@ contacts the sessions database
 searching for the cookie value
 and validating the fields isAuthenticated and role
 */
-func (gk *Gatekeeper) CheckRoleAndAuth(sessionid string, role string) bool {
+func (gk *Gatekeeper) CheckRoleAndAuth(sessionid string) int {
 	redisclient := gk.dbclient.GetRedisClient()
 	res, err := redisclient.Get(sessionid).Result()
 	if err != nil {
-		return false
+		return 0
 	}
 	session := &authmodels.Session{}
 	err = json.Unmarshal([]byte(res), session)
 	if err != nil {
 		log.Println("Error unmarshaling retrieved session gatekeeper.go/CheckRole")
 		log.Println(err)
-		return false
+		return 0
 	}
-	if session.GetKey("isAuthenticated") == "true" && session.GetKey("role") == role {
-		return true
+	value, err := strconv.Atoi(session.GetKey("role"))
+	if err != nil {
+		log.Println(err, "error strconv")
+		return 0
 	}
-	return false
+	return value
 }
 
 /*
@@ -104,10 +109,11 @@ func (gk *Gatekeeper) StoreSessionToDb(sessionid, role, username string, w http.
 	rc, _ := datastorage.GetDataRouter().GetDb("sessions")
 	redisclient := rc.GetRedisClient()
 	redisclient.Set(sessionid, session.ToJSON(), 20*time.Minute)
-	if role == "admin" {
+	roleint, _ := strconv.Atoi(role)
+	if roleint >= variables.ADMIN {
 		http.Redirect(w, r, "/diaxeiristiko", http.StatusMovedPermanently)
 		return
-	} else if role == "user" {
+	} else if roleint <= variables.CAPTAIN {
 		http.Redirect(w, r, "/dashboard", http.StatusMovedPermanently)
 		return
 	}
@@ -127,7 +133,6 @@ func (gk *Gatekeeper) Login(w http.ResponseWriter, r *http.Request) {
 	mysqlclient := mc.GetMysqlClient()
 	res, err := mysqlclient.Query("SELECT password,role from accounts where username=?", r.PostFormValue("username"))
 	if err != nil {
-		log.Println(err, "Login gatekeeper function")
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
 	}
@@ -141,6 +146,7 @@ func (gk *Gatekeeper) Login(w http.ResponseWriter, r *http.Request) {
 	res.Close()
 	err = bcrypt.CompareHashAndPassword([]byte(password), []byte(r.PostFormValue("password")))
 	if err != nil {
+		messages.SetMessage(r, "Λάθος κωδικός ή όνομα χρήστη")
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
 	}
