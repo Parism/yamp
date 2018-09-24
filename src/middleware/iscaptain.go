@@ -8,14 +8,14 @@ import (
 )
 
 /*
-IsUser middleware function
+IsCaptain middleware function
 passes the cookie value to the according gatekeeper function
-if the cookie is authenticated and the role of the user is admin
+if the cookie is authenticated and the role of the user is at least captain
 then proceed to the next middleware
 Else, provide a message to the session
 and redirect to login page
 */
-func IsUser() Middleware {
+func IsCaptain() Middleware {
 	return func(h http.HandlerFunc) http.HandlerFunc {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			cookie, err := r.Cookie("sessionid")
@@ -23,7 +23,7 @@ func IsUser() Middleware {
 				http.Redirect(w, r, "/", http.StatusMovedPermanently)
 				return
 			}
-			if auth.GetGatekeeper().CheckRoleAndAuth(cookie.Value) >= variables.USER {
+			if auth.GetGatekeeper().CheckRoleAndAuth(cookie.Value) >= variables.CAPTAIN {
 				h.ServeHTTP(w, r)
 				/*
 					cookie exists and is authenticated

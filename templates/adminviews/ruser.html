@@ -22,17 +22,38 @@
     <div>{{.Context.Message}}</div>
     <div>
         <form action="changepass" method="POST">
-            <input type="password" name="password1" placeholder="Κωδικός">
-            <input type="password" name="password2" placeholder="Επιβεβαίωση κωδικού">
+            <input type="password" required name="password1" placeholder="Κωδικός">
+            <input type="password" required name="password2" placeholder="Επιβεβαίωση κωδικού">
             <input type="hidden" name="username" value={{.Data.Username}}>
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
             <input type="submit" value="Αλλαγή κωδικού">
         </form>
         <form action="deleteuser" method="POST">
-                <input type="hidden" name="username" value={{.Data.Username}}>
+                <input type="hidden" name="id" value={{.Data.ID}}>
                 <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
                 <input type="submit" value="Διαγραφή λογαριασμού">    
         </form>
+    </div>
+    <div>
+        <h3>Σύνδεση με βάσεις</h3>
+        {{if eq "user" .Data.Role}}
+        <form action="setuserdb" method="POST">
+            <select name="db" required>
+                <option value="11" selected>db1/1</option>
+                <option value="12">db1/2</option>
+            </select>
+            <input type="hidden" name="id" value={{.Data.ID}}>
+            <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        </form>
+        {{end}}
+        {{if eq "captain" .Data.Role}}
+        <form action="setcaptaindb" method="POST">
+            <input type="checkbox" name="db" value="11">
+            <input type="checkbox" name="db" value="12">
+            <input type="hidden" name="id" value={{.Data.ID}}>
+            <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        </form>
+        {{end}}
     </div>
 </body>
 </html>

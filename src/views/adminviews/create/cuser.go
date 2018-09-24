@@ -5,6 +5,7 @@ import (
 	"messages"
 	"middleware"
 	"net/http"
+	"strconv"
 	"utils"
 	"views"
 
@@ -37,11 +38,13 @@ func user(w http.ResponseWriter, r *http.Request) {
 	}
 	stmt := datastorage.GetDataRouter().GetStmt("insert_new_user")
 	hash, _ := bcrypt.GenerateFromPassword([]byte(password1), bcrypt.DefaultCost)
-	_, err := stmt.Exec(username, hash, role)
+	res, err := stmt.Exec(username, hash, role)
 	if err != nil {
 		utils.RedirectWithError(w, r, "listusers", "Το όνομα υπάρχει ήδη", err)
 		return
 	}
+	lastinsertedid, err := res.LastInsertId()
+	id := strconv.FormatInt(lastinsertedid, 10)
 	messages.SetMessage(r, "Επιτυχής εισαγωγή χρήστη")
-	http.Redirect(w, r, "retrieveuser?username="+username, http.StatusMovedPermanently)
+	http.Redirect(w, r, "retrieveuser?id="+id, http.StatusMovedPermanently)
 }

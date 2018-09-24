@@ -32,7 +32,7 @@
         <input type="submit" value="Δημιουργία">
     </form>
     {{range .Data}}
-    <a href="retrieveuser?username={{.Username}}">{{.Username}} - {{.Role}}</a>
+    <a href="retrieveuser?id={{.ID}}">{{.Username}} - {{.Role}}</a>
     {{end}}
 </body>
 </html>

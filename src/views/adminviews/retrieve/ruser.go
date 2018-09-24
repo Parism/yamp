@@ -20,21 +20,23 @@ func init() {
 }
 
 func ruser(w http.ResponseWriter, r *http.Request) {
-	username := r.URL.Query().Get("username")
+	id := r.URL.Query().Get("id")
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
-	res, err := dbc.Query("SELECT username,rolestring from accounts join roles on accounts.role=roles.role where username =?", username)
+	res, err := dbc.Query("SELECT id,username,rolestring from accounts join roles on accounts.role=roles.role where id =?", id)
 	if err != nil {
 		messages.SetMessage(r, "Invalid query")
-		http.Redirect(w, r, "/users", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/listusers", http.StatusMovedPermanently)
 	}
 	var user models.User
 	if res.Next() {
 		_ = res.Scan(
+			&user.ID,
 			&user.Username,
 			&user.Role,
 		)
 	}
+	res.Close()
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
 	data.Data = user
