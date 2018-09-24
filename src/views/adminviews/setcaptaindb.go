@@ -26,7 +26,7 @@ func setcaptaindb(w http.ResponseWriter, r *http.Request) {
 	selectedvalues := r.Form["db"]
 	stmt := datastorage.GetDataRouter().GetStmt("create_db_access")
 	for _, value := range selectedvalues {
-		_, err := stmt.Exec(idint, value)
+		_, err := stmt.Exec(value, idint)
 		if err != nil {
 			utils.RedirectWithError(w, r, "/retrieveuser?id="+id, "Error writing db access", err)
 			return

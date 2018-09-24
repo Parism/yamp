@@ -2,6 +2,7 @@ package adminviews
 
 import (
 	"datastorage"
+	"log"
 	"messages"
 	"middleware"
 	"net/http"
@@ -29,9 +30,9 @@ func setuserdb(w http.ResponseWriter, r *http.Request) {
 		utils.RedirectWithError(w, r, "/retrieveuser?id="+id, "error deleting user db access", err)
 		return
 	}
-
 	stmt = datastorage.GetDataRouter().GetStmt("create_db_access")
-	_, err = stmt.Exec(id, db)
+	log.Println(idint)
+	_, err = stmt.Exec(db, idint)
 	if err != nil {
 		utils.RedirectWithError(w, r, "/retrieveuser?id="+id, "error creating user db access", err)
 		return

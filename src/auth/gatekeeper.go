@@ -73,6 +73,9 @@ func (gk *Gatekeeper) CheckRoleAndAuth(sessionid string) int {
 		log.Println(err)
 		return 0
 	}
+	if session.GetKey("isAuthenticated") == "false" {
+		return 0
+	}
 	value, err := strconv.Atoi(session.GetKey("role"))
 	if err != nil {
 		log.Println(err, "error strconv")

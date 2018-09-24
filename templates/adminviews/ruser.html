@@ -44,14 +44,17 @@
             </select>
             <input type="hidden" name="id" value={{.Data.ID}}>
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+            <input type="submit" value="Αποθήκευση">
         </form>
         {{end}}
         {{if eq "captain" .Data.Role}}
         <form action="setcaptaindb" method="POST">
-            <input type="checkbox" name="db" value="11">
-            <input type="checkbox" name="db" value="12">
+            <p>Βάσεις δεδομένων</p>
+            <input type="checkbox" name="db" value="11">11</input>
+            <input type="checkbox" name="db" value="12">12</input>
             <input type="hidden" name="id" value={{.Data.ID}}>
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+            <input type="submit" value="Αποθήκευση">
         </form>
         {{end}}
     </div>

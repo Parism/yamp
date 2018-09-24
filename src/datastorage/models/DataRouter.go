@@ -68,13 +68,18 @@ func (dr *DataRouter) BuildStatements() {
 		},
 		StmtExpr{
 			Db:    "common",
-			Query: "DELETE FROM dbaccess WHERE user=(?);",
+			Query: "DELETE FROM dbaccess WHERE user=?;",
 			Index: "delete_user_db",
 		},
 		StmtExpr{
 			Db:    "common",
 			Query: "INSERT INTO dbaccess (dbname,user) VALUES(?,?);",
 			Index: "create_db_access",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "SELECT dbname FROM dbaccess where user=?;",
+			Index: "select_db_access",
 		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)
