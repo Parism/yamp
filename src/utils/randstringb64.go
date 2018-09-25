@@ -13,7 +13,7 @@ returns a random base64 encoded string
 func GetRandStringb64() string {
 	var b []byte
 	var bdecoded string
-	b = make([]byte, 32)
+	b = make([]byte, 256)
 	_, err := rand.Read(b)
 	if err != nil {
 		fmt.Print(err)

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{.Context.User}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
+</head>
 <body>
     <nav>
         <ul>
@@ -17,7 +17,10 @@
             <li><a href="logout">Αποσύνδεση</a></li>            
         </ul>
     </nav>
-    <p>Καλώς ήρθατε {{.Context.User}} στον Διαγόρα.</p>
-    <p>Μπορείτε να περιηγηθείτε μέσω των παραπάνω συνδέσμων</p>
+    {{.Data.Name}}
+    <form action="ddelta" method="POST">
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <input type="hidden" name="id" value={{.Data.ID}}>
+        <input type="submit" value="Διαγραφή Δέλτα">
 </body>
 </html>

@@ -17,7 +17,17 @@
             <li><a href="logout">Αποσύνδεση</a></li>            
         </ul>
     </nav>
-    <p>Καλώς ήρθατε {{.Context.User}} στον Διαγόρα.</p>
-    <p>Μπορείτε να περιηγηθείτε μέσω των παραπάνω συνδέσμων</p>
+    <h3>
+        Δημιουργία Δέλτα
+    </h3>
+    {{.Context.Message}}
+    <form action="cdelta" method="POST">
+        <input type="text" name="name" required>
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <input type="submit" value="Δημιουργία">
+    </form>
+    {{range .Data}}
+    <a href="retrievedelta?id={{.ID}}">{{.Name}}</a>
+    {{end}}
 </body>
 </html>

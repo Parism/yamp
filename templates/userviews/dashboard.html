@@ -8,8 +8,12 @@
     </head>
 <body>
     <p>Καλώς ήρθες {{.Context.User}}</p>
-    <form action="/logout" method="POST">
-        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+    <nav>
+        <ul>
+            <li><a href="/logout"</li>
+        </ul>
+    </nav>
+    <form action="/logout" method="GET">
         <input type="submit" value="Αποσύνδεση">
     </form>
 </body>

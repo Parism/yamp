@@ -81,6 +81,26 @@ func (dr *DataRouter) BuildStatements() {
 			Query: "SELECT dbname FROM dbaccess where user=?;",
 			Index: "select_db_access",
 		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO lambdas (name) VALUES(?);",
+			Index: "create_lambda",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO deltas (name) VALUES(?);",
+			Index: "create_delta",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM deltas WHERE id=?;",
+			Index: "delete_delta",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM lambdas WHERE id=?;",
+			Index: "delete_lambda",
+		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)
 	var stmt *sql.Stmt
