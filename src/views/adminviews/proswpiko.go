@@ -49,9 +49,10 @@ func getProswpiko(c chan []models.Proswpiko) {
 	proswpiko := models.Proswpiko{}
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
-	res, _ := dbc.Query("SELECT pname,surname,rank from proswpiko_sorted;")
+	res, _ := dbc.Query("SELECT id,pname,surname,rank from proswpiko_sorted;")
 	for res.Next() {
 		_ = res.Scan(
+			&proswpiko.ID,
 			&proswpiko.Name,
 			&proswpiko.Surname,
 			&proswpiko.Rank,

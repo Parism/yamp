@@ -26,25 +26,27 @@
         <input type="text" name="name" required placeholder="Όνομα">
         <input type="text" name="surname" required placeholder="Επίθετο">
         <select name = "rank">
-            {{range index .Data "ranks"}}
+            {{range .Data.ranks}}
             <option value={{.ID}}>{{.Rank}}</option>
             {{end}}
         </select>
         <select name="lambda">
-            {{range index .Data "lambdas"}}
+            {{range .Data.lambdas}}
             <option value={{.ID}}>{{.Name}}</option>
             {{end}}
         </select>
         <select name="delta">
-                {{range index .Data "deltas"}}
+                {{range .Data.deltas}}
                 <option value={{.ID}}>{{.Name}}</option>
                 {{end}}
         </select>    
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
         <input type="submit" value="Δημιουργία">
     </form>
-    {{range index .Data "proswpiko"}}
-    <a href="retrieveproswpiko?id={{.ID}}">{{.Surname}} </a>
-    {{end}}
+    <div>
+        {{range .Data.proswpiko}}
+        <a href="retrieveproswpiko?id={{.ID}}">{{.Name}} {{.Surname}} {{.Rank}}</a>
+        {{end}}
+    </div>
 </body>
 </html>
