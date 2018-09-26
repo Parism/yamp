@@ -1,23 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{.Context.User}}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="diaxeiristiko">Αρχική</a></li>
-            <li><a href="listusers">Χρήστες</a></li>
-            <li><a href="typoiadeiwn">Τύποι αδειών</a></li>
-            <li><a href="lambdas">Λάμβδα</a></li>
-            <li><a href="deltas">Δέλτα</a></li>
-            <li><a href="logout">Αποσύνδεση</a></li>            
-        </ul>
-    </nav>
-    <p>Καλώς ήρθατε {{.Context.User}} στον Διαγόρα.</p>
-    <p>Μπορείτε να περιηγηθείτε μέσω των παραπάνω συνδέσμων</p>
-</body>
-</html>
+{{define "dashboard"}}
+{{template "header"}}
+{{template "navbar"}}
+<p>Καλώς ήρθατε {{.Context.User}} στον Διαγόρα.</p>
+<p>Μπορείτε να περιηγηθείτε μέσω των παραπάνω συνδέσμων</p>
+{{template "footer"}}
+{{end}}

@@ -2,7 +2,7 @@ package adminviews
 
 import (
 	"datastorage"
-	"html/template"
+	"fmt"
 	"middleware"
 	"models"
 	"net/http"
@@ -40,6 +40,14 @@ func listusers(w http.ResponseWriter, r *http.Request) {
 	data := utils.Data{}
 	data.Context = context
 	data.Data = users
-	t := template.Must(template.ParseFiles("./templates/adminviews/users.html"))
-	t.Execute(w, data)
+	t, err := utils.LoadTemplates("users",
+		"templates/adminviews/users.html",
+		"templates/adminviews/navbar.html",
+		"templates/adminviews/header.html",
+		"templates/adminviews/footer.html")
+	if err != nil {
+		fmt.Fprintf(w, "Err->%s", err)
+		return
+	}
+	t.ExecuteTemplate(w, "users", data)
 }

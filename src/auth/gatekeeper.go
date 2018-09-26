@@ -112,6 +112,7 @@ func (gk *Gatekeeper) StoreSessionToDb(sessionid, role, username string, w http.
 	rc, _ := datastorage.GetDataRouter().GetDb("sessions")
 	redisclient := rc.GetRedisClient()
 	redisclient.Set(sessionid, session.ToJSON(), 20*time.Minute)
+	redisclient.ExpireAt(sessionid, time.Now().Add(20*time.Minute))
 	roleint, _ := strconv.Atoi(role)
 	if roleint >= variables.ADMIN {
 		http.Redirect(w, r, "/diaxeiristiko", http.StatusMovedPermanently)
@@ -165,7 +166,6 @@ change the value isAuthenticated to false
 and redirect him to the / page
 */
 func (gk *Gatekeeper) Logout(w http.ResponseWriter, r *http.Request) {
-	log.Println("Gatekeeper logout")
 	cookie, _ := r.Cookie("sessionid")
 	sessionid := cookie.Value
 	rc, _ := datastorage.GetDataRouter().GetDb("sessions")

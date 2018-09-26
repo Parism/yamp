@@ -2,7 +2,7 @@ package retrieve
 
 import (
 	"datastorage"
-	"html/template"
+	"fmt"
 	"messages"
 	"middleware"
 	"models"
@@ -42,6 +42,14 @@ func rdelta(w http.ResponseWriter, r *http.Request) {
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
 	data.Data = delta
-	t := template.Must(template.ParseFiles("templates/adminviews/rdelta.html"))
-	t.Execute(w, data)
+	t, err := utils.LoadTemplates("rdelta",
+		"templates/adminviews/rdelta.html",
+		"templates/adminviews/header.html",
+		"templates/adminviews/footer.html",
+		"templates/adminviews/navbar.html")
+	if err != nil {
+		fmt.Fprintf(w, "->%s", err)
+		return
+	}
+	t.ExecuteTemplate(w, "rdelta", data)
 }

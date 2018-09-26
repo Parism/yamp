@@ -2,7 +2,7 @@ package adminviews
 
 import (
 	"datastorage"
-	"html/template"
+	"fmt"
 	"middleware"
 	"models"
 	"net/http"
@@ -39,9 +39,17 @@ func listlambdas(w http.ResponseWriter, r *http.Request) {
 		lambdas = append(lambdas, lambda)
 	}
 	res.Close()
-	t := template.Must(template.ParseFiles("templates/adminviews/lambdas.html"))
+	t, err := utils.LoadTemplates("lambdas",
+		"templates/adminviews/lambdas.html",
+		"templates/adminviews/navbar.html",
+		"templates/adminviews/header.html",
+		"templates/adminviews/footer.html")
+	if err != nil {
+		fmt.Fprintf(w, "Err->%s", err)
+		return
+	}
 	var data utils.Data
 	data.Context = utils.LoadContext(r)
 	data.Data = lambdas
-	t.Execute(w, data)
+	t.ExecuteTemplate(w, "lambdas", data)
 }

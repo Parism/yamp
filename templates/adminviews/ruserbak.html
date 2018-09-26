@@ -1,9 +1,7 @@
 {{define "ruser"}}
 {{template "header"}}
 {{template "navbar"}}
-    <div>
-        <h3>{{.Data.user.Username}} {{.Data.user.Role}}</h3>
-    </div>
+
     <div>{{.Context.Message}}</div>
     <div>
         <form action="changepass" method="POST">
@@ -21,8 +19,8 @@
     </div>
     <div>
         <h3>Σύνδεση με βάσεις</h3>
-        <form action="updateuserlabel" method="POST">
-            <select name="label" required>
+        <form action="setuserdelta" method="POST">
+            <select name="group" required>
             {{if eq "user" .Data.user.Role}}
             {{range .Data.deltas}}
                 <option value={{.ID}}>{{.Name}}</option>

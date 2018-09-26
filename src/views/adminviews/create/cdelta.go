@@ -18,6 +18,10 @@ func init() {
 	))
 }
 
+/*
+cdelta function
+is responsible for creating objects of type delta
+*/
 func cdelta(w http.ResponseWriter, r *http.Request) {
 	name := r.PostFormValue("name")
 	stmt := datastorage.GetDataRouter().GetStmt("create_delta")

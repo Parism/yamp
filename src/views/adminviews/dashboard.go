@@ -1,7 +1,7 @@
 package adminviews
 
 import (
-	"html/template"
+	"fmt"
 	"middleware"
 	"net/http"
 	"utils"
@@ -24,6 +24,13 @@ func Diaxeiristiko(w http.ResponseWriter, r *http.Request) {
 	context := utils.LoadContext(r)
 	data := utils.Data{}
 	data.Context = context
-	t := template.Must(template.ParseFiles("./templates/adminviews/dashboard.html"))
-	t.Execute(w, data)
+	t, err := utils.LoadTemplates("dashboard",
+		"./templates/adminviews/dashboard.html",
+		"./templates/adminviews/navbar.html",
+		"./templates/adminviews/header.html",
+		"./templates/adminviews/footer.html")
+	if err != nil {
+		fmt.Fprintf(w, "Error->%s", err)
+	}
+	t.ExecuteTemplate(w, "dashboard", data)
 }

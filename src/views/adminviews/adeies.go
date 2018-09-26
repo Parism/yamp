@@ -2,7 +2,7 @@ package adminviews
 
 import (
 	"datastorage"
-	"html/template"
+	"fmt"
 	"log"
 	"messages"
 	"middleware"
@@ -42,9 +42,18 @@ func listtypoiadeiwn(w http.ResponseWriter, r *http.Request) {
 		}
 		adeies = append(adeies, adeia)
 	}
+	res.Close()
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
 	data.Data = adeies
-	t := template.Must(template.ParseFiles("templates/adminviews/typoiadeiwn.html"))
-	t.Execute(w, data)
+	t, err := utils.LoadTemplates("typoiadeiwn",
+		"templates/adminviews/typoiadeiwn.html",
+		"templates/adminviews/header.html",
+		"templates/adminviews/footer.html",
+		"templates/adminviews/navbar.html")
+	if err != nil {
+		fmt.Fprintf(w, "Error->%s", err)
+		return
+	}
+	t.ExecuteTemplate(w, "typoiadeiwn", data)
 }

@@ -2,7 +2,7 @@ package retrieve
 
 import (
 	"datastorage"
-	"html/template"
+	"fmt"
 	"messages"
 	"middleware"
 	"models"
@@ -20,6 +20,12 @@ func init() {
 }
 
 func ruser(w http.ResponseWriter, r *http.Request) {
+	cdeltas := make(chan []models.Groupld)
+	clambdas := make(chan []models.Groupld)
+	go getLd("lambdas", clambdas)
+	go getLd("deltas", cdeltas)
+	deltas := <-cdeltas
+	lambdas := <-clambdas
 	id := r.URL.Query().Get("id")
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
@@ -37,9 +43,39 @@ func ruser(w http.ResponseWriter, r *http.Request) {
 		)
 	}
 	res.Close()
+	datamap := make(map[string]interface{})
+	datamap["deltas"] = deltas
+	datamap["lambdas"] = lambdas
+	datamap["user"] = user
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
-	data.Data = user
-	t := template.Must(template.ParseFiles("./templates/adminviews/ruser.html"))
-	t.Execute(w, data)
+	data.Data = datamap
+	t, err := utils.LoadTemplates("ruser",
+		"templates/adminviews/ruser.html",
+		"templates/adminviews/navbar.html",
+		"templates/adminviews/header.html",
+		"templates/adminviews/footer.html")
+	if err != nil {
+		fmt.Fprintf(w, "Err->%s", err)
+		return
+	}
+	t.ExecuteTemplate(w, "ruser", data)
+}
+
+func getLd(q string, c chan []models.Groupld) {
+	ldArray := []models.Groupld{}
+	ld := models.Groupld{}
+	db, _ := datastorage.GetDataRouter().GetDb("common")
+	dbc := db.GetMysqlClient()
+	query := "SELECT * FROM " + q + ";"
+	res, _ := dbc.Query(query)
+	for res.Next() {
+		_ = res.Scan(
+			&ld.ID,
+			&ld.Name,
+		)
+		ldArray = append(ldArray, ld)
+	}
+	res.Close()
+	c <- ldArray
 }

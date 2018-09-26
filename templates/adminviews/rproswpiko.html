@@ -1,0 +1,8 @@
+{{define "rproswpiko"}}
+{{template "header"}}
+{{.Context.Message}}
+{{template "navbar"}}
+<h2>{{.Data.Surname}} {{.Data.Name}}</h2>
+<h3>{{.Data.Rank}} {{.Data.Lambda}} {{.Data.Delta}}</h3>
+{{template "footer"}}
+{{end}}

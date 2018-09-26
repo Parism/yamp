@@ -2,7 +2,7 @@ package adminviews
 
 import (
 	"datastorage"
-	"html/template"
+	"fmt"
 	"middleware"
 	"models"
 	"net/http"
@@ -39,9 +39,17 @@ func listdeltas(w http.ResponseWriter, r *http.Request) {
 		deltas = append(deltas, delta)
 	}
 	res.Close()
-	t := template.Must(template.ParseFiles("templates/adminviews/deltas.html"))
+	t, err := utils.LoadTemplates("deltas",
+		"templates/adminviews/deltas.html",
+		"templates/adminviews/navbar.html",
+		"templates/adminviews/header.html",
+		"templates/adminviews/footer.html")
+	if err != nil {
+		fmt.Fprintf(w, "Err->%s", err)
+		return
+	}
 	var data utils.Data
 	data.Context = utils.LoadContext(r)
 	data.Data = deltas
-	t.Execute(w, data)
+	t.ExecuteTemplate(w, "deltas", data)
 }

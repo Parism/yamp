@@ -13,7 +13,7 @@ import (
 
 /*
 NewCookie function returns
-a cookie lasting 120 minutes
+a cookie lasting 20 minutes
 */
 func NewCookie() *http.Cookie {
 	rc, err := datastorage.GetDataRouter().GetDb("sessions")
@@ -29,7 +29,8 @@ func NewCookie() *http.Cookie {
 			session.SetKey("role", "none")
 			session.SetKey("isAuthenticated", "false")
 			session.SetKey("csrftoken", utils.GetRandStringb64())
-			redisclient.SetNX(bdecoded, session.ToJSON(), 20*time.Minute)
+			redisclient.Set(bdecoded, session.ToJSON(), 20*time.Minute)
+			redisclient.ExpireAt(bdecoded, time.Now().Add(20*time.Minute))
 			break
 		}
 	}

@@ -18,6 +18,10 @@ func init() {
 	))
 }
 
+/*
+clambda function
+is responsible for creating objects of type lambda
+*/
 func clambda(w http.ResponseWriter, r *http.Request) {
 	name := r.PostFormValue("name")
 	stmt := datastorage.GetDataRouter().GetStmt("create_lambda")

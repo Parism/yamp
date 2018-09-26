@@ -18,6 +18,10 @@ func init() {
 	))
 }
 
+/*
+ctyposadeias function
+is responsible for creating leave objects
+*/
 func ctyposadeias(w http.ResponseWriter, r *http.Request) {
 	typosadeias := r.PostFormValue("typosadeias")
 	stmt := datastorage.GetDataRouter().GetStmt("create_typos_adeias")

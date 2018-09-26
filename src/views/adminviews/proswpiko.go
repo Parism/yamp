@@ -2,7 +2,7 @@ package adminviews
 
 import (
 	"datastorage"
-	"html/template"
+	"fmt"
 	"middleware"
 	"models"
 	"net/http"
@@ -39,9 +39,16 @@ func proswpiko(w http.ResponseWriter, r *http.Request) {
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
 	data.Data = datamap
-	t := template.Must(template.ParseFiles("templates/adminviews/proswpiko.html"))
-	t.Execute(w, data)
-
+	t, err := utils.LoadTemplates("proswpiko",
+		"templates/adminviews/proswpiko.html",
+		"templates/adminviews/navbar.html",
+		"templates/adminviews/header.html",
+		"templates/adminviews/footer.html")
+	if err != nil {
+		fmt.Fprintf(w, "Err->%s", err)
+		return
+	}
+	t.ExecuteTemplate(w, "proswpiko", data)
 }
 
 func getProswpiko(c chan []models.Proswpiko) {
@@ -59,6 +66,7 @@ func getProswpiko(c chan []models.Proswpiko) {
 		)
 		proswpikoArray = append(proswpikoArray, proswpiko)
 	}
+	res.Close()
 	c <- proswpikoArray
 }
 
@@ -75,6 +83,7 @@ func getRanks(c chan []models.Rank) {
 		)
 		ranksArray = append(ranksArray, rank)
 	}
+	res.Close()
 	c <- ranksArray
 }
 
@@ -92,5 +101,6 @@ func getLd(q string, c chan []models.Groupld) {
 		)
 		ldArray = append(ldArray, ld)
 	}
+	res.Close()
 	c <- ldArray
 }

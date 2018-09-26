@@ -101,6 +101,11 @@ func (dr *DataRouter) BuildStatements() {
 			Query: "DELETE FROM lambdas WHERE id=?;",
 			Index: "delete_lambda",
 		},
+		StmtExpr{
+			Db:    "common",
+			Query: "UPDATE accounts SET label=? WHERE id=?;",
+			Index: "update_user_label",
+		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)
 	var stmt *sql.Stmt
