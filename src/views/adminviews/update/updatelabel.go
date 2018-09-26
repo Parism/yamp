@@ -1,15 +1,11 @@
 package update
 
-package update
-
 import (
 	"datastorage"
 	"messages"
 	"middleware"
 	"net/http"
 	"views"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 func init() {
@@ -27,6 +23,8 @@ is used to change the password of an account
 if it ever gets lost.
 */
 func updateUserLabel(w http.ResponseWriter, r *http.Request) {
+	id := r.PostFormValue("id")
+	label := r.PostFormValue("label")
 	stmt := datastorage.GetDataRouter().GetStmt("update_user_label")
 	_, err := stmt.Exec(label, id)
 	if err != nil {
@@ -34,6 +32,6 @@ func updateUserLabel(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/retrieveuser?id="+id, http.StatusMovedPermanently)
 		return
 	}
-	messages.SetMessage(r, "Προσδιορισμός ομάδος, ")
+	messages.SetMessage(r, "Προσδιορισμός ομάδος επιτυχής")
 	http.Redirect(w, r, "/retrieveuser?id="+id, http.StatusMovedPermanently)
 }
