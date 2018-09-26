@@ -1,6 +1,7 @@
 package update
 
 import (
+	"database/sql"
 	"datastorage"
 	"messages"
 	"middleware"
@@ -24,7 +25,11 @@ if it ever gets lost.
 */
 func updateUserLabel(w http.ResponseWriter, r *http.Request) {
 	id := r.PostFormValue("id")
-	label := r.PostFormValue("label")
+	var label interface{}
+	label = r.PostFormValue("label")
+	if label == "nil" {
+		label = sql.NullString{}
+	}
 	stmt := datastorage.GetDataRouter().GetStmt("update_user_label")
 	_, err := stmt.Exec(label, id)
 	if err != nil {

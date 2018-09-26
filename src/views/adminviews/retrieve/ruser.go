@@ -8,6 +8,7 @@ import (
 	"models"
 	"net/http"
 	"utils"
+	"variables"
 	"views"
 )
 
@@ -22,11 +23,14 @@ func init() {
 func ruser(w http.ResponseWriter, r *http.Request) {
 	cdeltas := make(chan []models.Groupld)
 	clambdas := make(chan []models.Groupld)
+	cstring := make(chan string)
+	id := r.URL.Query().Get("id")
 	go getLd("lambdas", clambdas)
 	go getLd("deltas", cdeltas)
+	go getLabel(id, cstring)
 	deltas := <-cdeltas
 	lambdas := <-clambdas
-	id := r.URL.Query().Get("id")
+	label := <-cstring
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	res, err := dbc.Query("SELECT id,username,rolestring from accounts join roles on accounts.role=roles.role where id =?", id)
@@ -43,6 +47,7 @@ func ruser(w http.ResponseWriter, r *http.Request) {
 		)
 	}
 	res.Close()
+	user.Label = label
 	datamap := make(map[string]interface{})
 	datamap["deltas"] = deltas
 	datamap["lambdas"] = lambdas
@@ -78,4 +83,27 @@ func getLd(q string, c chan []models.Groupld) {
 	}
 	res.Close()
 	c <- ldArray
+}
+
+func getLabel(id string, c chan string) {
+	db, _ := datastorage.GetDataRouter().GetDb("common")
+	dbc := db.GetMysqlClient()
+	var role int
+	res, _ := dbc.Query("SELECT role from accounts where id = ?", id)
+	if res.Next() {
+		res.Scan(&role)
+	}
+	res.Close()
+	var q string
+	if role == variables.CAPTAIN {
+		q = "select name from lambdaname where id = ?"
+	} else if role == variables.USER {
+		q = "select name from deltaname where id = ?"
+	}
+	res, _ = dbc.Query(q, id)
+	var label string
+	if res.Next() {
+		_ = res.Scan(&label)
+	}
+	c <- label
 }

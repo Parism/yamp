@@ -3,6 +3,9 @@
 {{template "navbar"}}
     <div>
         <h3>{{.Data.user.Username}} {{.Data.user.Role}}</h3>
+        {{if .Data.user.Label}}
+        <p>{{.Data.user.Label}}</p>
+        {{end}}
     </div>
     <div>{{.Context.Message}}</div>
     <div>
@@ -24,17 +27,19 @@
         <form action="updateuserlabel" method="POST">
             <select name="label" required>
             {{if eq "user" .Data.user.Role}}
+            <option value="nil">Καμία</option>
             {{range .Data.deltas}}
                 <option value={{.ID}}>{{.Name}}</option>
             {{end}}
             {{end}}
             {{if eq "captain" .Data.user.Role}}
+            <option value="nil">Καμία</option>
             {{range .Data.lambdas}}
                 <option value={{.ID}}>{{.Name}}</option>
             {{end}}
             {{end}}
             </select>
-            <input type="hidden" name="id" value={{.Data.ID}}>
+            <input type="hidden" name="id" value={{.Data.user.ID}}>
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
             <input type="submit" value="Αποθήκευση">
         </form>
