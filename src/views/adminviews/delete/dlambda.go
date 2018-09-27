@@ -5,6 +5,7 @@ import (
 	"messages"
 	"middleware"
 	"net/http"
+	"strconv"
 	"utils"
 	"views"
 )
@@ -20,12 +21,13 @@ func init() {
 
 func dlambda(w http.ResponseWriter, r *http.Request) {
 	id := r.PostFormValue("id")
+	idint, _ := strconv.Atoi(id)
 	stmt := datastorage.GetDataRouter().GetStmt("delete_lambda")
-	_, err := stmt.Exec(id)
+	_, err := stmt.Exec(idint)
 	if err != nil {
-		utils.RedirectWithError(w, r, "/lambdas", "Ανεπιτυχής διαγραφή lambda", err)
+		utils.RedirectWithError(w, r, "/retrievelambda?id="+id, "Υπάρχουν ακόμα άτομα συνδεδεμένα με το Λάμδα", err)
 		return
 	}
-	messages.SetMessage(r, "Επιτυχής διαγραφή lambda")
+	messages.SetMessage(r, "Επιτυχής διαγραφή Λάμδα")
 	http.Redirect(w, r, "/lambdas", http.StatusMovedPermanently)
 }

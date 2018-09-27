@@ -25,6 +25,10 @@ retrieves a single personel object
 */
 func rproswpiko(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
+	cdeltas := make(chan []models.Groupld)
+	clambdas := make(chan []models.Groupld)
+	go utils.GetLd("lambdas", clambdas)
+	go utils.GetLd("deltas", cdeltas)
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	res, err := dbc.Query("select * from rproswpiko where id=?", id)
@@ -47,9 +51,15 @@ func rproswpiko(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	res.Close()
+	deltas := <-cdeltas
+	lambdas := <-clambdas
+	datamap := make(map[string]interface{})
+	datamap["Deltas"] = deltas
+	datamap["Lambdas"] = lambdas
+	datamap["Proswpiko"] = proswpiko
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
-	data.Data = proswpiko
+	data.Data = datamap
 	t, err := utils.LoadTemplates("rproswpiko",
 		"./templates/adminviews/rproswpiko.html",
 		"./templates/adminviews/header.html",

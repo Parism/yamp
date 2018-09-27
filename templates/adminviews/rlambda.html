@@ -5,7 +5,8 @@
     <form action="dlambda" method="POST">
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
         <input type="hidden" name="id" value={{.Data.ID}}>
-        <input type="submit" value="Διαγραφή Λάμβδα">
+        <input type="submit" value="Διαγραφή Λάμδα">
     </form>
+    {{.Context.Message}}
 {{template "footer"}}
 {{end}}

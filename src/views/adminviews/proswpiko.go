@@ -25,8 +25,8 @@ func proswpiko(w http.ResponseWriter, r *http.Request) {
 	clambdas := make(chan []models.Groupld)
 	go getProswpiko(cproswpiko)
 	go getRanks(cranks)
-	go getLd("lambdas", clambdas)
-	go getLd("deltas", cdeltas)
+	go utils.GetLd("lambdas", clambdas)
+	go utils.GetLd("deltas", cdeltas)
 	proswpikolist := <-cproswpiko
 	ranks := <-cranks
 	deltas := <-cdeltas
@@ -85,22 +85,4 @@ func getRanks(c chan []models.Rank) {
 	}
 	res.Close()
 	c <- ranksArray
-}
-
-func getLd(q string, c chan []models.Groupld) {
-	ldArray := []models.Groupld{}
-	ld := models.Groupld{}
-	db, _ := datastorage.GetDataRouter().GetDb("common")
-	dbc := db.GetMysqlClient()
-	query := "SELECT * FROM " + q + ";"
-	res, _ := dbc.Query(query)
-	for res.Next() {
-		_ = res.Scan(
-			&ld.ID,
-			&ld.Name,
-		)
-		ldArray = append(ldArray, ld)
-	}
-	res.Close()
-	c <- ldArray
 }

@@ -43,7 +43,7 @@ func rlambda(w http.ResponseWriter, r *http.Request) {
 	data.Context = utils.LoadContext(r)
 	data.Data = lambda
 	t, err := utils.LoadTemplates("rlambda",
-		"templates/adminviews/rdelta.html",
+		"templates/adminviews/rlambda.html",
 		"templates/adminviews/header.html",
 		"templates/adminviews/footer.html",
 		"templates/adminviews/navbar.html")

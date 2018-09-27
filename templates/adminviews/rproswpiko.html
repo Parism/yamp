@@ -1,8 +1,30 @@
 {{define "rproswpiko"}}
 {{template "header"}}
-{{.Context.Message}}
 {{template "navbar"}}
-<h2>{{.Data.Surname}} {{.Data.Name}}</h2>
-<h3>{{.Data.Rank}} {{.Data.Lambda}} {{.Data.Delta}}</h3>
+<h2>{{.Data.Proswpiko.Surname}} {{.Data.Proswpiko.Name}}</h2>
+<h3>{{.Data.Proswpiko.Rank}} {{.Data.Proswpiko.Lambda}} {{.Data.Proswpiko.Delta}}</h3>
+<div>
+    <form action="dproswpiko" method="POST">
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <input type="hidden" name="id" value={{.Data.Proswpiko.ID}}>
+        <input type="submit" value="Διαγραφή">
+    </form>
+    <form action="metathesi" method="POST">
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <input type="hidden" name="id" value={{.Data.Proswpiko.ID}}>
+        <select name="lambda" required>
+            {{range .Data.Lambdas}}
+            <option value={{.ID}}>{{.Name}}</option>
+            {{end}}
+        </select>
+        <select name="delta" required>
+            {{range .Data.Deltas}}
+            <option value={{.ID}}>{{.Name}}</option>
+            {{end}}
+        </select>
+        <input type="submit" value="Μετάθεση">
+    </form>
+    {{.Context.Message}}
+</div>
 {{template "footer"}}
 {{end}}

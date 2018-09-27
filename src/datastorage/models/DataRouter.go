@@ -106,6 +106,21 @@ func (dr *DataRouter) BuildStatements() {
 			Query: "UPDATE accounts SET label=? WHERE id=?;",
 			Index: "update_user_label",
 		},
+		StmtExpr{
+			Db:    "common",
+			Query: "UPDATE proswpiko SET lambda=?,delta=? WHERE id=?;",
+			Index: "metathesi",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO proswpiko (name,surname,rank,lambda,delta) VALUES(?,?,?,?,?);",
+			Index: "create_proswpiko",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM proswpiko WHERE id=?;",
+			Index: "delete_proswpiko",
+		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)
 	var stmt *sql.Stmt

@@ -15,6 +15,10 @@ holds valid csrf value within the post data
 func CsrfProtection() Middleware {
 	return func(h http.HandlerFunc) http.HandlerFunc {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.Method == "GET" {
+				h.ServeHTTP(w, r)
+				return
+			}
 			cookie, _ := r.Cookie("sessionid")
 			sessionid := cookie.Value
 			rc, _ := datastorage.GetDataRouter().GetDb("sessions")

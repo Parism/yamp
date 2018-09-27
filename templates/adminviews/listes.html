@@ -1,0 +1,28 @@
+{{define "listes"}}
+{{template "header"}}
+{{template "navbar"}}
+<form action="listes" method="POST">
+    <select name="lambda">
+        <option value="" selected>-</option>
+        {{range .Data.lambdas}}
+            <option value={{.Name}}>{{.Name}}</option>
+        {{end}}
+    </select>
+    <select name="delta">
+        <option value="" selected>-</option>
+        {{range .Data.deltas}}
+            <option value={{.Name}}>{{.Name}}</option>
+        {{end}}
+    </select>
+    <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+    <input type="submit" value="Ανάκτηση">
+</form>
+{{.Context.Message}}
+{{range $key := .Data.rankmap.Keys}}
+    <strong>{{$key}}</strong>
+    {{range $person := index $.Data.rankmap.Rankmap $key}}
+        <p>{{$person}}</p>
+    {{end}}
+{{end}}
+{{template "footer"}}
+{{end}}
