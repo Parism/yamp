@@ -1,7 +1,7 @@
 package userviews
 
 import (
-	"html/template"
+	"fmt"
 	"middleware"
 	"net/http"
 	"utils"
@@ -24,6 +24,15 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 	context := utils.LoadContext(r)
 	data := utils.Data{}
 	data.Context = context
-	t := template.Must(template.ParseFiles("./templates/userviews/dashboard.html"))
-	t.Execute(w, data)
+	t, err := utils.LoadTemplates("dashboard",
+		"templates/userviews/dashboard.html",
+		"templates/userviews/navbar.html",
+		"templates/userviews/header.html",
+		"templates/userviews/footer.html")
+	if err != nil {
+		fmt.Fprintf(w, "Err->%s", err)
+		return
+	}
+	t.ExecuteTemplate(w, "dashboard", data)
+
 }

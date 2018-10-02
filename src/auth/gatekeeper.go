@@ -102,10 +102,11 @@ func (gk *Gatekeeper) SessionExists(sessionid string) bool {
 StoreSessionToDb function
 takes a sessionid, creates a session object that is authenticated
 */
-func (gk *Gatekeeper) StoreSessionToDb(sessionid, role, username string, w http.ResponseWriter, r *http.Request) {
+func (gk *Gatekeeper) StoreSessionToDb(sessionid, role, username, label string, w http.ResponseWriter, r *http.Request) {
 	session := &authmodels.Session{}
 	session.Sessionmap = make(map[string]string)
 	session.SetKey("isAuthenticated", "true")
+	session.SetKey("label", label)
 	session.SetKey("role", role)
 	session.SetKey("username", username)
 	session.SetKey("csrftoken", utils.GetRandStringb64())
@@ -135,14 +136,14 @@ func (gk *Gatekeeper) Login(w http.ResponseWriter, r *http.Request) {
 	sessionid := cookie.Value
 	mc, _ := datastorage.GetDataRouter().GetDb("common")
 	mysqlclient := mc.GetMysqlClient()
-	res, err := mysqlclient.Query("SELECT password,role from accounts where username=?", r.PostFormValue("username"))
+	res, err := mysqlclient.Query("SELECT password,role,label from accounts where username=?", r.PostFormValue("username"))
 	if err != nil {
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
 	}
-	var password, role string
+	var password, role, label string
 	if res.Next() {
-		err = res.Scan(&password, &role)
+		err = res.Scan(&password, &role, &label)
 		if err != nil {
 			log.Println("error fetching password", err)
 		}
@@ -154,7 +155,7 @@ func (gk *Gatekeeper) Login(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
 	}
-	gk.StoreSessionToDb(sessionid, role, r.PostFormValue("username"), w, r)
+	gk.StoreSessionToDb(sessionid, role, r.PostFormValue("username"), label, w, r)
 }
 
 /*

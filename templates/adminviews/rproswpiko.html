@@ -2,7 +2,9 @@
 {{template "header"}}
 {{template "navbar"}}
 <h2>{{.Data.Proswpiko.Surname}} {{.Data.Proswpiko.Name}}</h2>
-<h3>{{.Data.Proswpiko.Rank}} {{.Data.Proswpiko.Lambda}} {{.Data.Proswpiko.Delta}}</h3>
+<h3>{{.Data.Proswpiko.Rank}} {{.Data.Proswpiko.Label}}</h3>
+{{.Context.Message}}
+{{if ge .Context.Role 3}}
 <div>
     <form action="dproswpiko" method="POST">
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
@@ -12,19 +14,32 @@
     <form action="metathesi" method="POST">
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
         <input type="hidden" name="id" value={{.Data.Proswpiko.ID}}>
-        <select name="lambda" required>
-            {{range .Data.Lambdas}}
-            <option value={{.ID}}>{{.Name}}</option>
-            {{end}}
-        </select>
-        <select name="delta" required>
-            {{range .Data.Deltas}}
-            <option value={{.ID}}>{{.Name}}</option>
+        <select name="label" required>
+            {{range .Data.Ierarxia}}
+            <option value={{.ID}}>{{.Perigrafi}}</option>
             {{end}}
         </select>
         <input type="submit" value="Μετάθεση">
     </form>
-    {{.Context.Message}}
+{{end}}
+<div>
+    <h3>Προσθήκη άδειας</h3>
+    <form action="cadeia" method="POST">
+        <select name="typosadeias" required>
+            {{range .Data.TypoiAdeiwn}}
+            <option value={{.ID}}>{{.TyposAdeias}}</option>
+            {{end}}
+        </select>
+        <input type="date" name="start">
+        <input type="date" name="end">
+        <input type="hidden" name="personid" value={{.Data.Proswpiko.ID}}>
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <input type="submit" value="Προσθήκη">
+    </form>
+</div>
+<div>
+
+</div>
 </div>
 {{template "footer"}}
 {{end}}

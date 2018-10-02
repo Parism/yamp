@@ -2,6 +2,7 @@ package create
 
 import (
 	"datastorage"
+	"log"
 	"messages"
 	"middleware"
 	"net/http"
@@ -26,15 +27,16 @@ func cproswpiko(w http.ResponseWriter, r *http.Request) {
 	name := r.PostFormValue("name")
 	surname := r.PostFormValue("surname")
 	rank := r.PostFormValue("rank")
-	lambda := r.PostFormValue("lambda")
-	delta := r.PostFormValue("delta")
+	label := r.PostFormValue("label")
 	stmt := datastorage.GetDataRouter().GetStmt("create_proswpiko")
+	if stmt == nil {
+		log.Fatal(stmt, "Its nill bruh")
+	}
 	_, err := stmt.Exec(
 		name,
 		surname,
 		rank,
-		lambda,
-		delta,
+		label,
 	)
 	if err != nil {
 		utils.RedirectWithError(w, r, "/proswpiko", "Ανεπιτυχής δημιουργία προσωπικού", err)

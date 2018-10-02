@@ -22,14 +22,12 @@ func init() {
 
 func metathesi(w http.ResponseWriter, r *http.Request) {
 	id := r.PostFormValue("id")
-	lambda := r.PostFormValue("lambda")
-	delta := r.PostFormValue("delta")
+	label := r.PostFormValue("label")
+	labelint, _ := strconv.Atoi(label)
 	idint, _ := strconv.Atoi(id)
-	lambdaint, _ := strconv.Atoi(lambda)
-	deltaint, _ := strconv.Atoi(delta)
-	log.Println(idint, lambdaint, deltaint)
+	log.Println(idint, labelint)
 	stmt := datastorage.GetDataRouter().GetStmt("metathesi")
-	_, err := stmt.Exec(lambdaint, deltaint, idint)
+	_, err := stmt.Exec(label, idint)
 	if err != nil {
 		utils.RedirectWithError(w, r, "/retrieveproswpiko?id="+id, "Σφάλμα κατά την διαδικασία μετάθεσης", err)
 		return

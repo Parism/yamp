@@ -9,6 +9,5 @@ type Proswpiko struct {
 	Name    string
 	Surname string
 	Rank    string
-	Lambda  string
-	Delta   string
+	Label   string
 }

@@ -25,19 +25,10 @@
     <div>
         <h3>Σύνδεση με βάσεις</h3>
         <form action="updateuserlabel" method="POST">
-            <select name="label" required>
-            {{if eq "user" .Data.user.Role}}
-            <option value="nil">Καμία</option>
-            {{range .Data.deltas}}
-                <option value={{.ID}}>{{.Name}}</option>
-            {{end}}
-            {{end}}
-            {{if eq "captain" .Data.user.Role}}
-            <option value="nil">Καμία</option>
-            {{range .Data.lambdas}}
-                <option value={{.ID}}>{{.Name}}</option>
-            {{end}}
-            {{end}}
+            <select name="label">
+                {{range .Data.ierarxia}}
+                    <option value={{.ID}}>{{.Name}}</option>
+                {{end}}
             </select>
             <input type="hidden" name="id" value={{.Data.user.ID}}>
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>

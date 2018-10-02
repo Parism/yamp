@@ -6,20 +6,15 @@
     <form action="cproswpiko" method="POST">
         <input type="text" name="name" required placeholder="Όνομα">
         <input type="text" name="surname" required placeholder="Επίθετο">
-        <select name = "rank">
+        <select name = "rank" required>
             {{range .Data.ranks}}
             <option value={{.ID}}>{{.Rank}}</option>
             {{end}}
         </select>
-        <select name="lambda">
-            {{range .Data.lambdas}}
-            <option value={{.ID}}>{{.Name}}</option>
+        <select name="label" required>
+            {{range .Data.ierarxia}}
+            <option value={{.ID}}>{{.Perigrafi}}</option>
             {{end}}
-        </select>
-        <select name="delta">
-                {{range .Data.deltas}}
-                <option value={{.ID}}>{{.Name}}</option>
-                {{end}}
         </select>    
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
         <input type="submit" value="Δημιουργία">

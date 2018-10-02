@@ -21,21 +21,17 @@ func init() {
 func proswpiko(w http.ResponseWriter, r *http.Request) {
 	cproswpiko := make(chan []models.Proswpiko)
 	cranks := make(chan []models.Rank)
-	cdeltas := make(chan []models.Groupld)
-	clambdas := make(chan []models.Groupld)
+	cierarxia := make(chan []models.Ierarxia)
 	go getProswpiko(cproswpiko)
 	go getRanks(cranks)
-	go utils.GetLd("lambdas", clambdas)
-	go utils.GetLd("deltas", cdeltas)
+	go utils.GetDimoiries(cierarxia)
 	proswpikolist := <-cproswpiko
 	ranks := <-cranks
-	deltas := <-cdeltas
-	lambdas := <-clambdas
+	ierarxia := <-cierarxia
 	datamap := make(map[string]interface{})
 	datamap["proswpiko"] = proswpikolist
 	datamap["ranks"] = ranks
-	datamap["deltas"] = deltas
-	datamap["lambdas"] = lambdas
+	datamap["ierarxia"] = ierarxia
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
 	data.Data = datamap

@@ -21,15 +21,12 @@ func init() {
 }
 
 func ruser(w http.ResponseWriter, r *http.Request) {
-	cdeltas := make(chan []models.Groupld)
-	clambdas := make(chan []models.Groupld)
+	cierarxia := make(chan []models.Groupld)
 	cstring := make(chan string)
 	id := r.URL.Query().Get("id")
-	go getLd("lambdas", clambdas)
-	go getLd("deltas", cdeltas)
+	go getIerarxia(cierarxia)
 	go getLabel(id, cstring)
-	deltas := <-cdeltas
-	lambdas := <-clambdas
+	ierarxia := <-cierarxia
 	label := <-cstring
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
@@ -49,8 +46,7 @@ func ruser(w http.ResponseWriter, r *http.Request) {
 	res.Close()
 	user.Label = label
 	datamap := make(map[string]interface{})
-	datamap["deltas"] = deltas
-	datamap["lambdas"] = lambdas
+	datamap["ierarxia"] = ierarxia
 	datamap["user"] = user
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
@@ -67,12 +63,12 @@ func ruser(w http.ResponseWriter, r *http.Request) {
 	t.ExecuteTemplate(w, "ruser", data)
 }
 
-func getLd(q string, c chan []models.Groupld) {
+func getIerarxia(c chan []models.Groupld) {
 	ldArray := []models.Groupld{}
 	ld := models.Groupld{}
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
-	query := "SELECT * FROM " + q + ";"
+	query := "SELECT id,perigrafi FROM ierarxia;"
 	res, _ := dbc.Query(query)
 	for res.Next() {
 		_ = res.Scan(

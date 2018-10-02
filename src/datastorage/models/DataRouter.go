@@ -108,12 +108,12 @@ func (dr *DataRouter) BuildStatements() {
 		},
 		StmtExpr{
 			Db:    "common",
-			Query: "UPDATE proswpiko SET lambda=?,delta=? WHERE id=?;",
+			Query: "UPDATE proswpiko SET label=? WHERE id=?;",
 			Index: "metathesi",
 		},
 		StmtExpr{
 			Db:    "common",
-			Query: "INSERT INTO proswpiko (name,surname,rank,lambda,delta) VALUES(?,?,?,?,?);",
+			Query: "INSERT INTO proswpiko (name,surname,rank,label) VALUES(?,?,?,?);",
 			Index: "create_proswpiko",
 		},
 		StmtExpr{
@@ -121,13 +121,21 @@ func (dr *DataRouter) BuildStatements() {
 			Query: "DELETE FROM proswpiko WHERE id=?;",
 			Index: "delete_proswpiko",
 		},
+
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO ierarxia (perigrafi,parentid) VALUES (?,?)",
+			Index: "create_ierarxia",
+		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)
 	var stmt *sql.Stmt
+	var err error
 	for _, value := range stmtArray {
 		db, _ := dr.GetDb(value.Db)
 		dbm := db.GetMysqlClient()
-		stmt, _ = dbm.Prepare(value.Query)
+		stmt, err = dbm.Prepare(value.Query)
+		logger.CheckErrFatal("stmt failed "+value.Index, err)
 		dr.statements[value.Index] = stmt
 	}
 }

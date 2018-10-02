@@ -1,17 +1,17 @@
-{{define "listes"}}
+{{define "stelexh"}}
 {{template "header"}}
 {{template "navbar"}}
-<form action="listes" method="POST">
-    <select name="label">
-        <option value="" selected>-</option>
+{{.Context.Message}}
+<form action="stelexh" method="POST">
+    <select  name="label" required>
         {{range .Data.labels}}
             <option value={{.ID}}>{{.Perigrafi}}</option>
         {{end}}
+        <option></option>
     </select>
     <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
     <input type="submit" value="Ανάκτηση">
 </form>
-{{.Context.Message}}
 {{range $key := .Data.rankmap.Keys}}
     <strong>{{$key}}</strong>
     <ul>
@@ -20,5 +20,6 @@
     {{end}}
     </ul>
 {{end}}
+
 {{template "footer"}}
 {{end}}

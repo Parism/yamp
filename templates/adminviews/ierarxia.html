@@ -1,0 +1,24 @@
+{{define "ierarxia"}}
+{{template "header"}}
+{{template "navbar"}}
+{{.Context.Message}}
+<form action="cierarxia" method="POST">
+    <input type="text" name="perigrafi" placeholder="Περιγραφή">
+    <select>
+        <option value="">Καμία</option>
+        {{range .Data}}
+        <option value={{.ID}}>{{.Perigrafi}}</option>
+        {{end}}
+    </select>
+    <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+    <input type="submit" value="Δημιουργία">
+</form>
+<div>
+    <ul>
+    {{range .Data}}
+    <a href="retrieveierarxia?id={{.ID}}">{{.Name}}</a><p></p>
+    {{end}}
+    </ul>
+</div>
+{{template "footer"}}
+{{end}}
