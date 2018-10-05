@@ -23,23 +23,31 @@
     </form>
 {{end}}
 <div>
-    <h3>Προσθήκη άδειας</h3>
+    <h3>Προσθήκη Μεταβολής</h3>
     <form action="cadeia" method="POST">
         <select name="typosadeias" required>
             {{range .Data.TypoiAdeiwn}}
             <option value={{.ID}}>{{.TyposAdeias}}</option>
             {{end}}
         </select>
-        <input type="date" name="start">
-        <input type="date" name="end">
+        <div>
+            <label>Από</label>
+            <input type="text" id="start" class="datepicker" size="30">
+        </div>
+        <div>
+            <label>Εώς</label>
+            <input type="text" id="end" class="datepicker" size="30">    
+        </div>
+        <input type="hidden" name="start" id="starthidden">
+        <input type="hidden" name="end" id="endhidden">
         <input type="hidden" name="personid" value={{.Data.Proswpiko.ID}}>
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
         <input type="submit" value="Προσθήκη">
     </form>
 </div>
 <div>
-
 </div>
 </div>
 {{template "footer"}}
+<script src="js/diagoras/datemod.js"></script>
 {{end}}

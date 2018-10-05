@@ -28,7 +28,7 @@ retrieves a single personel object
 func rproswpiko(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	idint, _ := strconv.Atoi(id)
-	if !checkProswpikoLabel(r, idint) {
+	if !utils.CanActOnPerson(r, idint) {
 		http.Redirect(w, r, "/notfound", http.StatusMovedPermanently)
 		return
 	}
@@ -85,25 +85,4 @@ func rproswpiko(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	t.ExecuteTemplate(w, "rproswpiko", data)
-}
-
-func checkProswpikoLabel(r *http.Request, id int) bool {
-	role := utils.GetSessionValue(r, "role")
-	roleint, _ := strconv.Atoi(role)
-	if roleint >= variables.ADMIN {
-		return true
-	}
-	labeltemp := utils.GetSessionValue(r, "label")
-	labelredis, _ := strconv.Atoi(labeltemp)
-	db, _ := datastorage.GetDataRouter().GetDb("common")
-	dbc := db.GetMysqlClient()
-	res, _ := dbc.Query("SELECT proswpiko.id FROM proswpiko join ierarxia on proswpiko.label=ierarxia.id || proswpiko.label=ierarxia.parentid where ierarxia.id=? || ierarxia.parentid=?", labelredis, labelredis)
-	var temp int
-	for res.Next() {
-		_ = res.Scan(&temp)
-		if id == temp {
-			return true
-		}
-	}
-	return false
 }

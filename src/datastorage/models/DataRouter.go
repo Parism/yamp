@@ -121,11 +121,15 @@ func (dr *DataRouter) BuildStatements() {
 			Query: "DELETE FROM proswpiko WHERE id=?;",
 			Index: "delete_proswpiko",
 		},
-
 		StmtExpr{
 			Db:    "common",
 			Query: "INSERT INTO ierarxia (perigrafi,parentid) VALUES (?,?)",
 			Index: "create_ierarxia",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO adeies (type,idperson,start,end) VALUES (?,?,?,?)",
+			Index: "create_adeia",
 		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)

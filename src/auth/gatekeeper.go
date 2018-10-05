@@ -143,10 +143,7 @@ func (gk *Gatekeeper) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	var password, role, label string
 	if res.Next() {
-		err = res.Scan(&password, &role, &label)
-		if err != nil {
-			log.Println("error fetching password", err)
-		}
+		_ = res.Scan(&password, &role, &label)
 	}
 	res.Close()
 	err = bcrypt.CompareHashAndPassword([]byte(password), []byte(r.PostFormValue("password")))
