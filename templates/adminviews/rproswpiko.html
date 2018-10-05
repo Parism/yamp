@@ -46,6 +46,11 @@
     </form>
 </div>
 <div>
+    <ul>
+        {{range .Data.Adeies}}
+            <li>Σε {{.Typos}} διαρκείας {{.Days}} ημερών. {{call .GetStart}} {{call .GetEnd}}</li>
+        {{end}}
+    </ul>
 </div>
 </div>
 {{template "footer"}}

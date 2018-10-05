@@ -34,8 +34,10 @@ func rproswpiko(w http.ResponseWriter, r *http.Request) {
 	}
 	cierarxia := make(chan []models.Ierarxia)
 	ctypoiadeiwn := make(chan []models.TyposAdeias)
+	cadeies := make(chan []models.Adeia)
 	go utils.GetTypoiAdeiwn(ctypoiadeiwn)
 	go utils.GetDimoiries(cierarxia)
+	go utils.GetAdeies(idint, cadeies)
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	res, err := dbc.Query("select * from rproswpiko where id=?", id)
@@ -59,10 +61,12 @@ func rproswpiko(w http.ResponseWriter, r *http.Request) {
 	res.Close()
 	typoiadeiwn := <-ctypoiadeiwn
 	ierarxia := <-cierarxia
+	adeies := <-cadeies
 	datamap := make(map[string]interface{})
 	datamap["Ierarxia"] = ierarxia
 	datamap["Proswpiko"] = proswpiko
 	datamap["TypoiAdeiwn"] = typoiadeiwn
+	datamap["Adeies"] = adeies
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
 	data.Data = datamap
