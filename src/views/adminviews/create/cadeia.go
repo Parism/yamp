@@ -31,6 +31,9 @@ func cadeia(w http.ResponseWriter, r *http.Request) {
 	typosadeias := r.PostFormValue("typosadeias")
 	start := r.PostFormValue("start")
 	end := r.PostFormValue("end")
+	if end == "" {
+		end = start
+	}
 	start = strings.TrimSpace(start)
 	end = strings.TrimSpace(end)
 	startdate, err := time.Parse("02/01/2006", start)

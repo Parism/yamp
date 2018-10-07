@@ -1,0 +1,21 @@
+{{define "dynamologia"}}
+{{template "header"}}
+{{template "navbar"}}
+{{.Context.Message}}
+<div>
+    <form id="dynform">
+        <select id="label">
+            <option value="all">Συγκεντρωτικό</option>
+        </select>
+        <input type="hidden" id="datehidden">
+        <input type="text" id="date" class="datepicker" size="30">
+        <input type="submit" value="Ανάκτηση">
+    </form>
+</div>
+<div id="result">
+
+</div>
+{{template "footer"}}
+<script src="js/diagoras/datemod.js"></script>
+<script src="js/diagoras/dyn.js"></script>
+{{end}}

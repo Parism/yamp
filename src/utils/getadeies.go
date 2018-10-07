@@ -24,8 +24,7 @@ func GetAdeies(id int, c chan []models.Adeia) {
 			&adeia.Days,
 			&adeia.IDPerson,
 		)
-		adeia.GetEnd = adeia.GetEndDate
-		adeia.GetStart = adeia.GetStartDate
+		adeia.BuildRepr()
 		adeies = append(adeies, adeia)
 	}
 	c <- adeies

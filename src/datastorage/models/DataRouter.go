@@ -131,6 +131,11 @@ func (dr *DataRouter) BuildStatements() {
 			Query: "INSERT INTO adeies (type,idperson,start,end) VALUES (?,?,?,?)",
 			Index: "create_adeia",
 		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM adeies where id=?",
+			Index: "delete_adeia",
+		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)
 	var stmt *sql.Stmt

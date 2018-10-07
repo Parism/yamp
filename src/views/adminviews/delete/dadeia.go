@@ -6,6 +6,8 @@ import (
 	"messages"
 	"middleware"
 	"net/http"
+	"strconv"
+	"utils"
 	"views"
 )
 
@@ -14,20 +16,27 @@ func init() {
 		middleware.Time(),
 		middleware.CsrfProtection(),
 		middleware.NeedsSession(),
-		middleware.IsAdmin(),
+		middleware.IsUser(),
 	))
 }
 
 func dadeia(w http.ResponseWriter, r *http.Request) {
-	id := r.PostFormValue("id")
-	stmt := datastorage.GetDataRouter().GetStmt("delete_typos_adeias")
-	_, err := stmt.Exec(id)
-	if err != nil {
-		messages.SetMessage(r, "Σφάλμα κατά την διαγραφή του τύπου άδειας")
-		log.Println(err)
-		http.Redirect(w, r, "/typoiadeiwn", http.StatusMovedPermanently)
+	personid := r.PostFormValue("personid")
+	personidint, _ := strconv.Atoi(personid)
+	if !utils.CanActOnPerson(r, personidint) {
+		http.Redirect(w, r, "/notfound", http.StatusMovedPermanently)
 		return
 	}
-	messages.SetMessage(r, "Ο τύπος άδειας διαγράφηκε επιτυχώς")
-	http.Redirect(w, r, "/typoiadeiwn", http.StatusMovedPermanently)
+	id := r.PostFormValue("id")
+	stmt := datastorage.GetDataRouter().GetStmt("delete_adeia")
+	_, err := stmt.Exec(id)
+	if err != nil {
+		messages.SetMessage(r, "Σφάλμα κατά την διαγραφή της άδειας")
+		log.Println(err)
+		http.Redirect(w, r, "/retrieveproswpiko?id="+personid, http.StatusMovedPermanently)
+		return
+	}
+	messages.SetMessage(r, "Επιτυχής διαγραφή άδειας")
+	http.Redirect(w, r, "/retrieveproswpiko?id="+personid, http.StatusMovedPermanently)
+
 }

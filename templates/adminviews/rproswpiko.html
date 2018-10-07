@@ -47,8 +47,16 @@
 </div>
 <div>
     <ul>
+        {{$csrftoken := .Context.Csrftoken}}
+        {{$personid := .Data.Proswpiko.ID}}
         {{range .Data.Adeies}}
-            <li>Σε {{.Typos}} διαρκείας {{.Days}} ημερών. {{call .GetStart}} {{call .GetEnd}}</li>
+            <li>{{.Repr}}<form action="dadeia" method="POST">
+                <input type="hidden" name="csrftoken" value={{$csrftoken}}>
+                <input type="hidden" name="id" value={{.ID}}>
+                <input type="hidden" name="personid" value={{$personid}}>
+                <input type="submit" value="Διαγραφή">
+            </form>
+            </li>
         {{end}}
     </ul>
 </div>
