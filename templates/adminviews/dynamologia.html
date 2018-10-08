@@ -6,6 +6,9 @@
     <form id="dynform">
         <select id="label">
             <option value="all">Συγκεντρωτικό</option>
+            {{range .Data.labels}}
+            <option value={{.ID}}>{{.Perigrafi}}</option>
+            {{end}}
         </select>
         <input type="hidden" id="datehidden">
         <input type="text" id="date" class="datepicker" size="30">

@@ -6,8 +6,8 @@ is a way to remember the insertion order in the map
 iterate the map in insertion order by iterating the map
 */
 type RankMap struct {
-	Rankmap map[string][]Proswpiko
-	Keys    []string
+	Rankmap map[string][]Proswpiko `json:"rankmap"`
+	keys    []string
 }
 
 /*
@@ -23,7 +23,7 @@ SetKey function
 sets a key in the map and the key slice
 */
 func (rm *RankMap) SetKey(key string) {
-	rm.Keys = append(rm.Keys, key)
+	rm.keys = append(rm.keys, key)
 	rm.Rankmap[key] = nil
 }
 
@@ -34,7 +34,7 @@ RankMap in order to be able to iterate
 the map in insertion order
 */
 func (rm *RankMap) GetKeys() []string {
-	return rm.Keys
+	return rm.keys
 }
 
 /*

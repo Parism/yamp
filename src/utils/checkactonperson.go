@@ -7,6 +7,11 @@ import (
 	"variables"
 )
 
+/*
+CanActOnPerson function
+is used to check whether a request can manipulate
+or view the requested person
+*/
 func CanActOnPerson(r *http.Request, id int) bool {
 	role := GetSessionValue(r, "role")
 	roleint, _ := strconv.Atoi(role)
