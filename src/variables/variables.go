@@ -8,3 +8,7 @@ var CAPTAIN = 2
 
 //USER var used for user role
 var USER = 1
+
+//LOGIN_EXPIRATION var used for session management
+//self explanatory
+var LOGIN_EXPIRATION = 30

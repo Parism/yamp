@@ -11,6 +11,8 @@ import (
 	_ "views/adminviews/retrieve"
 	_ "views/adminviews/update"
 	_ "views/userviews"
+	_ "views/userviews/create"
+	_ "views/userviews/delete"
 )
 
 func main() {

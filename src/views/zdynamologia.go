@@ -2,7 +2,6 @@ package views
 
 import (
 	"fmt"
-	"log"
 	"middleware"
 	"models"
 	"net/http"
@@ -24,7 +23,6 @@ func dynamologia(w http.ResponseWriter, r *http.Request) {
 	role := utils.GetSessionValue(r, "role")
 	roleint, _ := strconv.Atoi(role)
 	labelredis, _ := strconv.Atoi(utils.GetSessionValue(r, "label"))
-	log.Println(labelredis, variables.ADMIN)
 	if roleint == variables.ADMIN {
 		go utils.GetIerarxia(clabels)
 	} else {

@@ -14,7 +14,7 @@
 {{range $key := .Data.rankmap.Keys}}
     <strong>{{$key}}</strong>
     <ul>
-    {{range $person := index $.Data.rankmap.Rankmap $key}}
+    {{range $person := index $.Data.rankmap.Map $key}}
         <li><a href="retrieveproswpiko?id={{$person.ID}}">{{$person.Surname}} {{$person.Name}}</a></li>
     {{end}}
     </ul>

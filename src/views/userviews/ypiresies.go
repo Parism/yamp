@@ -11,36 +11,28 @@ import (
 )
 
 func init() {
-	views.GetMux().HandleFunc("/stelexh", middleware.WithMiddleware(stelexh,
+	views.GetMux().HandleFunc("/ypiresies", middleware.WithMiddleware(ypiresies,
 		middleware.Time(),
 		middleware.NeedsSession(),
+		middleware.CsrfProtection(),
 		middleware.IsUser(),
 	))
 }
 
-func stelexh(w http.ResponseWriter, r *http.Request) {
+func ypiresies(w http.ResponseWriter, r *http.Request) {
 	clabels := make(chan []models.Ierarxia)
-	list := []models.Proswpiko{}
-	list = nil
-	rankmap := models.CustomMap{}
-	rankmap.Init()
+	ctypoiypiresiwn := make(chan []models.TyposYpiresias)
 	labelredis, _ := strconv.Atoi(utils.GetSessionValue(r, "label"))
 	go utils.GetLabels(labelredis, clabels)
 	if r.Method == "POST" {
 		label := r.PostFormValue("label")
 		labelform, _ := strconv.Atoi(label)
 		if utils.CheckLabelAuthed(r, labelform) {
-			list = utils.GetProswpikoList(labelform)
-			for _, value := range utils.GetRankList(labelform) {
-				rankmap.SetKey(value)
-			}
-			for index := range list {
-				rankmap.Set(list[index].Rank, list[index])
-			}
+			go utils.GetTypoiYpiresiwn(labelform, ctypoiypiresiwn)
 		}
 	}
-	t, err := utils.LoadTemplates("stelexh",
-		"templates/userviews/stelexh.html",
+	t, err := utils.LoadTemplates("ypiresies",
+		"templates/userviews/ypiresies.html",
 		"templates/userviews/navbar.html",
 		"templates/userviews/header.html",
 		"templates/userviews/footer.html")
@@ -49,11 +41,10 @@ func stelexh(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	datamap := make(map[string]interface{})
-	datamap["rankmap"] = rankmap
-	datamap["list"] = list
+	datamap["ypiresies"] = <-ctypoiypiresiwn
 	datamap["labels"] = <-clabels
 	data := utils.Data{}
 	data.Data = datamap
 	data.Context = utils.LoadContext(r)
-	t.ExecuteTemplate(w, "stelexh", data)
+	t.ExecuteTemplate(w, "ypiresies", data)
 }

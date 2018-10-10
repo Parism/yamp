@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	views.GetMux().HandleFunc("/dtyposadeias", middleware.WithMiddleware(dtypouadeias,
+	views.GetMux().HandleFunc("/dcategoryadeias", middleware.WithMiddleware(dcategoryadeias,
 		middleware.Time(),
 		middleware.CsrfProtection(),
 		middleware.NeedsSession(),
@@ -18,16 +18,16 @@ func init() {
 	))
 }
 
-func dtypouadeias(w http.ResponseWriter, r *http.Request) {
+func dcategoryadeias(w http.ResponseWriter, r *http.Request) {
 	id := r.PostFormValue("id")
-	stmt := datastorage.GetDataRouter().GetStmt("delete_typos_adeias")
+	stmt := datastorage.GetDataRouter().GetStmt("delete_category_adeias")
 	_, err := stmt.Exec(id)
 	if err != nil {
-		messages.SetMessage(r, "Σφάλμα κατά την διαγραφή του τύπου άδειας")
+		messages.SetMessage(r, "Σφάλμα κατά την διαγραφή της κατηγορίας μεταβολής")
 		log.Println(err)
 		http.Redirect(w, r, "/typoiadeiwn", http.StatusMovedPermanently)
 		return
 	}
-	messages.SetMessage(r, "Ο τύπος άδειας διαγράφηκε επιτυχώς")
+	messages.SetMessage(r, "Η κατηγορία μεταβολής διαγράφηκε επιτυχώς")
 	http.Redirect(w, r, "/typoiadeiwn", http.StatusMovedPermanently)
 }

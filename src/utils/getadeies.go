@@ -27,5 +27,6 @@ func GetAdeies(id int, c chan []models.Adeia) {
 		adeia.BuildRepr()
 		adeies = append(adeies, adeia)
 	}
+	res.Close()
 	c <- adeies
 }

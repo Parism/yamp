@@ -25,7 +25,6 @@ func dproswpiko(w http.ResponseWriter, r *http.Request) {
 	idint, _ := strconv.Atoi(id)
 	stmt := datastorage.GetDataRouter().GetStmt("delete_proswpiko")
 	res, err := stmt.Exec(idint)
-	log.Println(id)
 	if err != nil {
 		utils.RedirectWithError(w, r, "/retrieveproswpiko?id="+id, "Ανεπιτυχής διαγραφή προσωπικού", err)
 		return

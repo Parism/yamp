@@ -1,10 +1,7 @@
 package adminviews
 
 import (
-	"datastorage"
 	"fmt"
-	"log"
-	"messages"
 	"middleware"
 	"models"
 	"net/http"
@@ -21,31 +18,26 @@ func init() {
 }
 
 func listtypoiadeiwn(w http.ResponseWriter, r *http.Request) {
-	db, _ := datastorage.GetDataRouter().GetDb("common")
-	dbc := db.GetMysqlClient()
-	res, err := dbc.Query("SELECT id,name FROM typoiadeiwn;")
-	if err != nil {
-		messages.SetMessage(r, "Σφάλμα κατά την φόρτωση των αδειών")
-		log.Println(err)
+	ctypoiadeias := make(chan []models.TyposAdeias)
+	ccategoryadeias := make(chan []models.CategoryAdeias)
+	go utils.GetTypoiAdeiwn(ctypoiadeias)
+	go utils.GetCategoriesAdeiwn(ccategoryadeias)
+	categories := <-ccategoryadeias
+	typoiadeiwn := <-ctypoiadeias
+	adeiesmap := models.CustomMap{}
+	adeiesmap.Init()
+	for _, value := range categories {
+		adeiesmap.SetKey(value.Category)
 	}
-	var adeies []models.TyposAdeias
-	var adeia models.TyposAdeias
-	for res.Next() {
-		err = res.Scan(
-			&adeia.ID,
-			&adeia.TyposAdeias,
-		)
-		if err != nil {
-			log.Println(err, "error parsing typoi adeiwn")
-			http.Redirect(w, r, "/typoiadeiwn", http.StatusMovedPermanently)
-			return
-		}
-		adeies = append(adeies, adeia)
+	for index := range typoiadeiwn {
+		adeiesmap.Set(typoiadeiwn[index].Category, typoiadeiwn[index])
 	}
-	res.Close()
+	datamap := make(map[string]interface{})
+	datamap["adeies"] = adeiesmap
+	datamap["categories"] = categories
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
-	data.Data = adeies
+	data.Data = datamap
 	t, err := utils.LoadTemplates("typoiadeiwn",
 		"templates/adminviews/typoiadeiwn.html",
 		"templates/adminviews/header.html",

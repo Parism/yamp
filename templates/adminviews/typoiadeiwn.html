@@ -1,26 +1,47 @@
 {{define "typoiadeiwn"}}
 {{template "header"}}
 {{template "navbar"}}
-<h3>Δημιουργία τύπου Μεταβολής</h3>
-    {{.Context.Message}}
+{{.Context.Message}}
+<h3>Δημιουργία κατηγορίας Μεταβολής</h3>
+<div>
+    <form action="ccategoryadeias" method="POST">
+        <input type="text" name="categoryadeias" placeholder="Κατηγορία μεταβολής" required>
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <input type="submit" value="Δημιουργία">
+    </form>
+</div>
+<h3>Δημιουργία Μεταβολής</h3>
     <div>
         <form action="ctyposadeias" method="POST">
             <input type="text" name="typosadeias" placeholder="Τύπος μεταβολής" required>
+            <select name="category">
+                {{range .Data.categories}}
+                <option value={{.ID}}>{{.Category}}</option>
+                {{end}}
+            </select>
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
             <input type="submit" value="Δημιουργία">
         </form>
     </div>
-    <h3>Λίστα τύπων Μεταβολών</h3>
+    <h3>Λίστα Μεταβολών</h3>
     <div>
-        {{$csrftoken := .Context.Csrftoken}}
-        {{range .Data}}
-        <p>{{.TyposAdeias}}</p>
-        <form action="dtypouadeias" method="POST">
-            <input type="hidden" name="csrftoken" value={{$csrftoken}}>
-            <input type="hidden" name="id" value={{.ID}}>
+    {{$csrftoken := .Context.Csrftoken}}
+    {{range $key := .Data.categories}}
+        <form action="dcategoryadeias" method="POST">
+            <strong>{{$key.Category}}</strong>
+            <input name="id" type="hidden" value="{{$key.ID}}">
+            <input name="csrftoken" value={{$csrftoken}} type="hidden">
+            <input type="submit" value="Διαγραφή">
+        </form>
+        {{range $adeia := index $.Data.adeies.Map $key.Category}}
+        <form action="dtyposadeias" method="POST">
+            <p>{{$adeia.TyposAdeias}}</p>
+            <input name="id" type="hidden" value="{{$adeia.ID}}">
+            <input name="csrftoken" value={{$csrftoken}} type="hidden">
             <input type="submit" value="Διαγραφή">
         </form>
         {{end}}
+    {{end}}
     </div>
 {{template "footer"}}
 {{end}}

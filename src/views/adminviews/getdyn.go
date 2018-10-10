@@ -36,8 +36,7 @@ func getdyn(w http.ResponseWriter, r *http.Request) {
 	} else if label != "all" && roleint == variables.ADMIN {
 		data = getdynlabel(date, labelform)
 	} else {
-		labelredis, _ := strconv.Atoi(utils.GetSessionValue(r, "label"))
-		if utils.CheckLabelAuthed(labelform, labelredis) {
+		if utils.CheckLabelAuthed(r, labelform) {
 			data = getdynlabel(date, labelform)
 		} else {
 			data = "Unauthenticated"
@@ -48,10 +47,17 @@ func getdyn(w http.ResponseWriter, r *http.Request) {
 }
 
 func getfulldyn(d string) string {
+	var dynamologio models.Dynamologio
+	c := make(chan []models.AdeiaDyn)
+	cmin := make(chan []models.MinDynRecord)
+	cminmetaboles := make(chan []models.MinDynAdeiaRecord)
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	dtemp, _ := time.Parse("02/01/2006", d)
 	datefordb := fmt.Sprintf("%d/%d/%d", dtemp.Year(), dtemp.Month(), dtemp.Day())
+	go utils.GetDynAdeies(datefordb, c)
+	go utils.GetDynMinAll(datefordb, cmin)
+	go utils.GetDynMinAdeiesAll(datefordb, cminmetaboles)
 	res, err := dbc.Query("select proswpiko_sorted.id,pname,surname,rank,perigrafi from proswpiko_sorted where proswpiko_sorted.id not in (select idperson from adeies where ? between adeies.start and adeies.end);", datefordb)
 	if err != nil {
 		log.Println(err)
@@ -76,7 +82,7 @@ func getfulldyn(d string) string {
 		return "Σφάλμα ανάκτησης βαθμών δυναμολογίου"
 	}
 	var rank models.Rank
-	var rankmap models.RankMap
+	var rankmap models.CustomMap
 	rankmap.Init()
 	for res.Next() {
 		_ = res.Scan(
@@ -89,7 +95,10 @@ func getfulldyn(d string) string {
 	for index := range proswpikoArray {
 		rankmap.Set(proswpikoArray[index].Rank, proswpikoArray[index])
 	}
-	jsonString, err := json.MarshalIndent(rankmap, "", " ")
+	dynamologio.Rankmap = rankmap
+	dynamologio.Metaboles = <-c
+	dynamologio.MetabolesMin = <-cminmetaboles
+	jsonString, err := json.MarshalIndent(dynamologio, "", " ")
 	if err != nil {
 		return err.Error()
 	}
@@ -97,10 +106,17 @@ func getfulldyn(d string) string {
 }
 
 func getdynlabel(d string, label int) string {
+	var dynamologio models.Dynamologio
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
+	c := make(chan []models.AdeiaDyn)
+	cmin := make(chan []models.MinDynRecord)
+	cminmetaboles := make(chan []models.MinDynAdeiaRecord)
 	dtemp, _ := time.Parse("02/01/2006", d)
 	datefordb := fmt.Sprintf("%d/%d/%d", dtemp.Year(), dtemp.Month(), dtemp.Day())
+	go utils.GetDynAdeiesLabeled(datefordb, label, c)
+	go utils.GetDynMinLabel(datefordb, label, cmin)
+	go utils.GetDynMinAdeiesLabel(datefordb, label, cminmetaboles)
 	res, err := dbc.Query("select proswpiko_sorted.id,pname,surname,rank,ierarxia.perigrafi from proswpiko_sorted join ierarxia on ierarxia.perigrafi = proswpiko_sorted.perigrafi where proswpiko_sorted.id not in (select idperson from adeies where ? between adeies.start and adeies.end) and (ierarxia.id = ? ||ierarxia.parentid = ?);", datefordb, label, label)
 	if err != nil {
 		log.Println(err)
@@ -125,7 +141,7 @@ func getdynlabel(d string, label int) string {
 		return "Σφάλμα ανάκτησης βαθμών δυναμολογίου"
 	}
 	var rank models.Rank
-	var rankmap models.RankMap
+	var rankmap models.CustomMap
 	rankmap.Init()
 	for res.Next() {
 		_ = res.Scan(
@@ -138,7 +154,10 @@ func getdynlabel(d string, label int) string {
 	for index := range proswpikoArray {
 		rankmap.Set(proswpikoArray[index].Rank, proswpikoArray[index])
 	}
-	jsonString, err := json.MarshalIndent(rankmap, "", " ")
+	dynamologio.Rankmap = rankmap
+	dynamologio.Metaboles = <-c
+	dynamologio.MetabolesMin = <-cminmetaboles
+	jsonString, err := json.MarshalIndent(dynamologio, "", " ")
 	if err != nil {
 		return err.Error()
 	}

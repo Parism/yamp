@@ -33,5 +33,6 @@ func GetRankList(label int) []string {
 		)
 		rankArray = append(rankArray, rank)
 	}
+	res.Close()
 	return rankArray
 }

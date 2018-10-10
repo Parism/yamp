@@ -24,13 +24,14 @@ is responsible for creating leave objects
 */
 func ctyposadeias(w http.ResponseWriter, r *http.Request) {
 	typosadeias := r.PostFormValue("typosadeias")
+	categoryadeias := r.PostFormValue("category")
 	stmt := datastorage.GetDataRouter().GetStmt("create_typos_adeias")
-	_, err := stmt.Exec(typosadeias)
+	_, err := stmt.Exec(typosadeias, categoryadeias)
 	if err != nil {
-		messages.SetMessage(r, "Σφάλμα κατά την δημιουργία του τύπου άδειας")
+		messages.SetMessage(r, "Σφάλμα κατά την δημιουργία του τύπου μεταβολής")
 		log.Println(err)
 	} else {
-		messages.SetMessage(r, "Ο τύπος άδειας δημιουργήθηκε επιτυχώς")
+		messages.SetMessage(r, "Ο τύπος μεταβολής δημιουργήθηκε επιτυχώς")
 	}
 	http.Redirect(w, r, "/typoiadeiwn", http.StatusMovedPermanently)
 }

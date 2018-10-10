@@ -63,7 +63,7 @@ func (dr *DataRouter) BuildStatements() {
 		},
 		StmtExpr{
 			Db:    "common",
-			Query: "INSERT INTO typoiadeiwn (name) VALUES(?);",
+			Query: "INSERT INTO typoiadeiwn (name,category) VALUES(?,?);",
 			Index: "create_typos_adeias",
 		},
 		StmtExpr{
@@ -135,6 +135,36 @@ func (dr *DataRouter) BuildStatements() {
 			Db:    "common",
 			Query: "DELETE FROM adeies where id=?",
 			Index: "delete_adeia",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO typoiypiresiwn (perigrafi,idmonadas) VALUES (?,?)",
+			Index: "create_typos_ypiresias",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM typoiypiresiwn where id = ?",
+			Index: "delete_typos_ypiresias",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO ypiresies (date,personid,typeid) VALUES(CURDATE(),?,?)",
+			Index: "create_person_ypiresia",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM ypiresies where idypiresies = ?",
+			Index: "delete_person_ypiresia",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO categories_adeiwn (category) VALUES (?)",
+			Index: "create_category_adeias",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM categories_adeiwn where id = ?",
+			Index: "delete_category_adeias",
 		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)

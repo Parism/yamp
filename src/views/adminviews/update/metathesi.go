@@ -2,7 +2,6 @@ package update
 
 import (
 	"datastorage"
-	"log"
 	"messages"
 	"middleware"
 	"net/http"
@@ -23,9 +22,7 @@ func init() {
 func metathesi(w http.ResponseWriter, r *http.Request) {
 	id := r.PostFormValue("id")
 	label := r.PostFormValue("label")
-	labelint, _ := strconv.Atoi(label)
 	idint, _ := strconv.Atoi(id)
-	log.Println(idint, labelint)
 	stmt := datastorage.GetDataRouter().GetStmt("metathesi")
 	_, err := stmt.Exec(label, idint)
 	if err != nil {

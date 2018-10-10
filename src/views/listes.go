@@ -21,7 +21,7 @@ func init() {
 func listes(w http.ResponseWriter, r *http.Request) {
 	list := []models.Proswpiko{}
 	list = nil
-	rankmap := models.RankMap{}
+	rankmap := models.CustomMap{}
 	rankmap.Init()
 	clabels := make(chan []models.Ierarxia)
 	go utils.GetDimoiries(clabels)

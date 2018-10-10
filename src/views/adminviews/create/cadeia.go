@@ -62,7 +62,7 @@ func cadeia(w http.ResponseWriter, r *http.Request) {
 	)
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
-	res, err := dbc.Query("select COUNT(*) from adeies join proswpiko on adeies.idperson = proswpiko.id where end between ? and ? or start between ? and ? and proswpiko.id = ?", startToStore, endToStore, startToStore, endToStore, personid)
+	res, err := dbc.Query("SELECT COUNT(*) from adeies where (end between ? and ? or start between ? and ?) and idperson = ?", startToStore, endToStore, startToStore, endToStore, personid)
 	if err != nil {
 		utils.RedirectWithError(w, r, "/retrieveproswpiko?id="+personid, "Σφάλμα ανάκτησης συνόλου μεταβολών", err)
 		return

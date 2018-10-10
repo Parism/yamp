@@ -32,5 +32,6 @@ func GetProswpikoList(label int) []models.Proswpiko {
 		)
 		proswpikoArray = append(proswpikoArray, proswpiko)
 	}
+	res.Close()
 	return proswpikoArray
 }

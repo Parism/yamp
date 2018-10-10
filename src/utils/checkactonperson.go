@@ -30,5 +30,6 @@ func CanActOnPerson(r *http.Request, id int) bool {
 			return true
 		}
 	}
+	res.Close()
 	return false
 }
