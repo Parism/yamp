@@ -7,7 +7,9 @@ to be parsed into json
 for this object
 */
 type Dynamologio struct {
-	Rankmap      CustomMap           `json:"rankmap"`
-	Metaboles    []AdeiaDyn          `json:"metaboles"`
-	MetabolesMin []MinDynAdeiaRecord `json:"metabolesmin"`
+	Proswpiko []Proswpiko `json:"proswpiko"`
+	Metaboles []AdeiaDyn  `json:"metaboles"`
+	Aitiseis  []Aitisi    `json:"aitiseis"`
+	Ypiresies []Ypiresia  `json:"ypiresies"`
+	Anafores  []Anafora   `json:"anafores"`
 }

@@ -56,10 +56,18 @@ info about persons and adeia objects aggregated
 func GetDynAdeiesLabeled(d string, label int, c chan []models.AdeiaDyn) {
 	var metaboles []models.AdeiaDyn
 	var metaboli models.AdeiaDyn
-	query := "SELECT personid,pname,sname,start,end,name,days,monada,rank FROM adeiesdynamologiou WHERE (iid = ? || pid=?) and ? BETWEEN start and end"
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
-	res, err := dbc.Query(query, label, label, d)
+	var buffer bytes.Buffer
+	buffer.WriteString("select personid,pname,sname,start,end,typoiadeiwn.name,")
+	buffer.WriteString("days,monada,rank,categories_adeiwn.category ")
+	buffer.WriteString("FROM adeiesdynamologiou ")
+	buffer.WriteString("join typoiadeiwn on adeiesdynamologiou.name = typoiadeiwn.name ")
+	buffer.WriteString("join categories_adeiwn on typoiadeiwn.category = categories_adeiwn.id ")
+	buffer.WriteString("WHERE (? BETWEEN start and end) ")
+	buffer.WriteString("and ")
+	buffer.WriteString("(iid = ? || pid=?)")
+	res, err := dbc.Query(buffer.String(), d, label, label)
 	if err != nil {
 		log.Println("Error fetching labeled adeies dyn", err)
 		c <- nil
@@ -76,6 +84,7 @@ func GetDynAdeiesLabeled(d string, label int, c chan []models.AdeiaDyn) {
 			&metaboli.Days,
 			&metaboli.Monada,
 			&metaboli.Rank,
+			&metaboli.Category,
 		)
 		metaboli.BuildRepr()
 		metaboles = append(metaboles, metaboli)

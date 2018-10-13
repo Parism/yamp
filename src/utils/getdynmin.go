@@ -78,15 +78,16 @@ func GetDynMinAdeiesLabel(d string, label int, c chan []models.MinDynAdeiaRecord
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	var buffer bytes.Buffer
-	buffer.WriteString("select categories_adeiwn.category,COUNT(*) from adeies ")
+	buffer.WriteString("select ranks.rank,categories_adeiwn.category,COUNT(*) from adeies ")
 	buffer.WriteString("join typoiadeiwn on adeies.type = typoiadeiwn.id ")
 	buffer.WriteString("join categories_adeiwn on typoiadeiwn.category = categories_adeiwn.id ")
 	buffer.WriteString("join proswpiko on proswpiko.id = adeies.idperson ")
-	buffer.WriteString("join ierarxia on ierarxia.id = proswpiko.label")
+	buffer.WriteString("join ierarxia on ierarxia.id = proswpiko.label ")
+	buffer.WriteString("join ranks on proswpiko.rank = ranks.id ")
 	buffer.WriteString("where (? between adeies.start and adeies.end) ")
 	buffer.WriteString("and ")
 	buffer.WriteString("(ierarxia.id=? || ierarxia.parentid=?) ")
-	buffer.WriteString("GROUP BY categories_adeiwn.category")
+	buffer.WriteString("GROUP BY proswpiko.rank,categories_adeiwn.category")
 	res, err := dbc.Query(buffer.String(), d, label, label)
 	if err != nil {
 		log.Println(err)
@@ -95,6 +96,7 @@ func GetDynMinAdeiesLabel(d string, label int, c chan []models.MinDynAdeiaRecord
 	}
 	for res.Next() {
 		_ = res.Scan(
+			&record.Rank,
 			&record.Category,
 			&record.Count,
 		)
@@ -114,7 +116,15 @@ func GetDynMinLabel(d string, label int, c chan []models.MinDynRecord) {
 	var records []models.MinDynRecord
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
-	res, err := dbc.Query("select rank,typoiadeiwn.name,COUNT(*) from adeies join proswpiko_sorted on adeies.idperson = proswpiko_sorted.id join typoiadeiwn on adeies.type = typoiadeiwn.id where iid=? || pid =? and (? between adeies.start and adeies.end) GROUP BY proswpiko_sorted.rank,typoiadeiwn.name", label, label, d)
+	var buffer bytes.Buffer
+	buffer.WriteString("SELECT rank,typoiadeiwn.name,COUNT(*) ")
+	buffer.WriteString("from adeies ")
+	buffer.WriteString("join proswpiko_sorted on adeies.idperson = proswpiko_sorted.id ")
+	buffer.WriteString("join typoiadeiwn on adeies.type = typoiadeiwn.id where iid = ? || pid=? ")
+	buffer.WriteString("and ")
+	buffer.WriteString("(? between adeies.start and adeies.end) ")
+	buffer.WriteString("GROUP BY proswpiko_sorted.rank,typoiadeiwn.name")
+	res, err := dbc.Query(buffer.String(), label, label, d)
 	if err != nil {
 		log.Println(err)
 		c <- nil

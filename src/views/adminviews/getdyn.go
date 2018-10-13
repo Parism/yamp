@@ -1,10 +1,8 @@
 package adminviews
 
 import (
-	"datastorage"
 	"encoding/json"
 	"fmt"
-	"log"
 	"middleware"
 	"models"
 	"net/http"
@@ -48,56 +46,23 @@ func getdyn(w http.ResponseWriter, r *http.Request) {
 
 func getfulldyn(d string) string {
 	var dynamologio models.Dynamologio
-	c := make(chan []models.AdeiaDyn)
-	cmin := make(chan []models.MinDynRecord)
-	cminmetaboles := make(chan []models.MinDynAdeiaRecord)
-	db, _ := datastorage.GetDataRouter().GetDb("common")
-	dbc := db.GetMysqlClient()
+	cproswpiko := make(chan []models.Proswpiko)
+	cadeies := make(chan []models.AdeiaDyn)
+	cypiresies := make(chan []models.Ypiresia)
+	caitiseis := make(chan []models.Aitisi)
+	canafores := make(chan []models.Anafora)
 	dtemp, _ := time.Parse("02/01/2006", d)
 	datefordb := fmt.Sprintf("%d/%d/%d", dtemp.Year(), dtemp.Month(), dtemp.Day())
-	go utils.GetDynAdeies(datefordb, c)
-	go utils.GetDynMinAll(datefordb, cmin)
-	go utils.GetDynMinAdeiesAll(datefordb, cminmetaboles)
-	res, err := dbc.Query("select proswpiko_sorted.id,pname,surname,rank,perigrafi from proswpiko_sorted where proswpiko_sorted.id not in (select idperson from adeies where ? between adeies.start and adeies.end);", datefordb)
-	if err != nil {
-		log.Println(err)
-		return "Σφάλμα ανάκτησης δυναμολογίου"
-	}
-	var proswpiko models.Proswpiko
-	var proswpikoArray []models.Proswpiko
-	for res.Next() {
-		_ = res.Scan(
-			&proswpiko.ID,
-			&proswpiko.Name,
-			&proswpiko.Surname,
-			&proswpiko.Rank,
-			&proswpiko.Label,
-		)
-		proswpikoArray = append(proswpikoArray, proswpiko)
-	}
-	res.Close()
-	res, err = dbc.Query("select distinct ranks.id,ranks.rank from proswpiko_sorted join ranks on ranks.rank = proswpiko_sorted.rank where proswpiko_sorted.id not in (select idperson from adeies where ? between adeies.start and adeies.end) order by ranks.id DESC;", d)
-	if err != nil {
-		log.Println(err)
-		return "Σφάλμα ανάκτησης βαθμών δυναμολογίου"
-	}
-	var rank models.Rank
-	var rankmap models.CustomMap
-	rankmap.Init()
-	for res.Next() {
-		_ = res.Scan(
-			&rank.ID,
-			&rank.Rank,
-		)
-		rankmap.SetKey(rank.Rank)
-	}
-	res.Close()
-	for index := range proswpikoArray {
-		rankmap.Set(proswpikoArray[index].Rank, proswpikoArray[index])
-	}
-	dynamologio.Rankmap = rankmap
-	dynamologio.Metaboles = <-c
-	dynamologio.MetabolesMin = <-cminmetaboles
+	go utils.GetDynProswpikoAll(datefordb, cproswpiko)
+	go utils.GetDynAdeies(datefordb, cadeies)
+	go utils.GetDynYpiresiesAll(datefordb, cypiresies)
+	go utils.GetDynAitiseisAll(datefordb, caitiseis)
+	go utils.GetDynAnaforesAll(datefordb, canafores)
+	dynamologio.Proswpiko = <-cproswpiko
+	dynamologio.Metaboles = <-cadeies
+	dynamologio.Ypiresies = <-cypiresies
+	dynamologio.Aitiseis = <-caitiseis
+	dynamologio.Anafores = <-canafores
 	jsonString, err := json.MarshalIndent(dynamologio, "", " ")
 	if err != nil {
 		return err.Error()
@@ -107,56 +72,23 @@ func getfulldyn(d string) string {
 
 func getdynlabel(d string, label int) string {
 	var dynamologio models.Dynamologio
-	db, _ := datastorage.GetDataRouter().GetDb("common")
-	dbc := db.GetMysqlClient()
-	c := make(chan []models.AdeiaDyn)
-	cmin := make(chan []models.MinDynRecord)
-	cminmetaboles := make(chan []models.MinDynAdeiaRecord)
+	cproswpiko := make(chan []models.Proswpiko)
+	cadeies := make(chan []models.AdeiaDyn)
+	cypiresies := make(chan []models.Ypiresia)
+	caitiseis := make(chan []models.Aitisi)
+	canafores := make(chan []models.Anafora)
 	dtemp, _ := time.Parse("02/01/2006", d)
 	datefordb := fmt.Sprintf("%d/%d/%d", dtemp.Year(), dtemp.Month(), dtemp.Day())
-	go utils.GetDynAdeiesLabeled(datefordb, label, c)
-	go utils.GetDynMinLabel(datefordb, label, cmin)
-	go utils.GetDynMinAdeiesLabel(datefordb, label, cminmetaboles)
-	res, err := dbc.Query("select proswpiko_sorted.id,pname,surname,rank,ierarxia.perigrafi from proswpiko_sorted join ierarxia on ierarxia.perigrafi = proswpiko_sorted.perigrafi where proswpiko_sorted.id not in (select idperson from adeies where ? between adeies.start and adeies.end) and (ierarxia.id = ? ||ierarxia.parentid = ?);", datefordb, label, label)
-	if err != nil {
-		log.Println(err)
-		return "Σφάλμα ανάκτησης δυναμολογίου"
-	}
-	var proswpiko models.Proswpiko
-	var proswpikoArray []models.Proswpiko
-	for res.Next() {
-		_ = res.Scan(
-			&proswpiko.ID,
-			&proswpiko.Name,
-			&proswpiko.Surname,
-			&proswpiko.Rank,
-			&proswpiko.Label,
-		)
-		proswpikoArray = append(proswpikoArray, proswpiko)
-	}
-	res.Close()
-	res, err = dbc.Query("select distinct ranks.id,ranks.rank from proswpiko_sorted join ranks on ranks.rank = proswpiko_sorted.rank where proswpiko_sorted.id not in (select idperson from adeies where ? between adeies.start and adeies.end) order by ranks.id DESC;", d)
-	if err != nil {
-		log.Println(err)
-		return "Σφάλμα ανάκτησης βαθμών δυναμολογίου"
-	}
-	var rank models.Rank
-	var rankmap models.CustomMap
-	rankmap.Init()
-	for res.Next() {
-		_ = res.Scan(
-			&rank.ID,
-			&rank.Rank,
-		)
-		rankmap.SetKey(rank.Rank)
-	}
-	res.Close()
-	for index := range proswpikoArray {
-		rankmap.Set(proswpikoArray[index].Rank, proswpikoArray[index])
-	}
-	dynamologio.Rankmap = rankmap
-	dynamologio.Metaboles = <-c
-	dynamologio.MetabolesMin = <-cminmetaboles
+	go utils.GetDynProswpikoLabel(datefordb, label, cproswpiko)
+	go utils.GetDynAdeiesLabeled(datefordb, label, cadeies)
+	go utils.GetDynYpiresiesLabel(datefordb, label, cypiresies)
+	go utils.GetDynAitiseisLabel(datefordb, label, caitiseis)
+	go utils.GetDynAnaforesLabel(datefordb, label, canafores)
+	dynamologio.Proswpiko = <-cproswpiko
+	dynamologio.Metaboles = <-cadeies
+	dynamologio.Ypiresies = <-cypiresies
+	dynamologio.Aitiseis = <-caitiseis
+	dynamologio.Anafores = <-canafores
 	jsonString, err := json.MarshalIndent(dynamologio, "", " ")
 	if err != nil {
 		return err.Error()

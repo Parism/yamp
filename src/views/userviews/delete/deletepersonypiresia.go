@@ -29,7 +29,7 @@ func dpersonypiresia(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	stmt := datastorage.GetDataRouter().GetStmt("delete_person_ypiresia")
-	res, err := stmt.Exec(idypiresiasint)
+	res, err := stmt.Exec(idypiresiasint, personidint)
 	affected, _ := res.RowsAffected()
 	if (err != nil) || affected < 1 {
 		utils.RedirectWithError(w, r, "/retrieveproswpiko?id="+personid, "Σφάλμα κατά την διαγραφή", err)
@@ -37,5 +37,4 @@ func dpersonypiresia(w http.ResponseWriter, r *http.Request) {
 	}
 	messages.SetMessage(r, "Επιτυχής διαγραφή υπηρεσίας")
 	http.Redirect(w, r, "/retrieveproswpiko?id="+personid, http.StatusMovedPermanently)
-
 }

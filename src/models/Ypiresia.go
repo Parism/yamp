@@ -14,7 +14,11 @@ Ypiresia struct
 holds the actual information
 */
 type Ypiresia struct {
-	ID        int
-	Perigrafi string
-	Date      string
+	ID        int    `json:"id"`
+	PersonID  int    `json:"idperson"`
+	Name      string `json:"name"`
+	Surname   string `json:"surname"`
+	Rank      string `json:"rank"`
+	Perigrafi string `json:"perigrafi"`
+	Date      string `json:"date"`
 }

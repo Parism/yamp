@@ -77,7 +77,57 @@
 </div>
 {{end}}
 {{if .Data.Ypiresies}}
-    {{.Data.Ypiresies}}
+    {{range .Data.Ypiresies}}
+    <form action="dpersonypiresia" method="POST">
+        <span>{{.Perigrafi}} {{.Date}}</span>
+        <input type="hidden" name="csrftoken" value={{$csrftoken}}>
+        <input type="hidden" name="id" value={{.ID}}>
+        <input type="hidden" name="personid" value={{$personid}}>
+        <input type="submit" value="Διαγραφή">
+    </form>
+    {{end}}
+{{end}}
+<div>
+{{if le .Context.Role 2}}
+    <h3>Προσθήκη αίτησης</h3>
+    <form action="caitisi" method="POST">
+            <input type="hidden" name="csrftoken" value={{$csrftoken}}>
+            <input type="hidden" name="personid" value={{$personid}}>
+            <input type="text" name="perigrafi">
+            <input type="submit" value="Δημιουργία">
+    </form>
+{{end}}
+    {{if.Data.Aitiseis}}
+        {{range .Data.Aitiseis}}
+            <form action="daitisi" method="POST">
+                <span>Αίτηση για {{.Perigrafi}}, καταχωρήθηκε την {{.Date}}</span>
+                <input type="hidden" name="csrftoken" value={{$csrftoken}}>
+                <input type="hidden" name="personid" value={{$personid}}>
+                <input type="hidden" name=id value={{.ID}}>
+                <input type="submit" value="Διαγραφή">
+            </form>
+        {{end}}
+    {{end}}
+</div>
+{{if le .Context.Role 2}}
+<h3>Προσθήκη αναφοράς</h3>
+    <form action="canafora" method="POST">
+            <input type="hidden" name="csrftoken" value={{$csrftoken}}>
+            <input type="hidden" name="personid" value={{$personid}}>
+            <input type="text" name="perigrafi">
+            <input type="submit" value="Δημιουργία">
+    </form>
+{{if .Data.Anafores}}
+    {{range .Data.Anafores}}
+        <form action="danafora" method="POST">
+            <span>{{.Perigrafi}}, καταχωρήθηκε την {{.Date}}</span>
+            <input type="hidden" name="csrftoken" value={{$csrftoken}}>
+            <input type="hidden" name="personid" value={{$personid}}>
+            <input type="hidden" name=id value={{.ID}}>
+            <input type="submit" value="Διαγραφή">
+        </form>
+    {{end}}
+{{end}}
 {{end}}
 {{template "footer"}}
 <script src="js/diagoras/datemod.js"></script>

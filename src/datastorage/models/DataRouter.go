@@ -83,26 +83,6 @@ func (dr *DataRouter) BuildStatements() {
 		},
 		StmtExpr{
 			Db:    "common",
-			Query: "INSERT INTO lambdas (name) VALUES(?);",
-			Index: "create_lambda",
-		},
-		StmtExpr{
-			Db:    "common",
-			Query: "INSERT INTO deltas (name) VALUES(?);",
-			Index: "create_delta",
-		},
-		StmtExpr{
-			Db:    "common",
-			Query: "DELETE FROM deltas WHERE id=?;",
-			Index: "delete_delta",
-		},
-		StmtExpr{
-			Db:    "common",
-			Query: "DELETE FROM lambdas WHERE id=?;",
-			Index: "delete_lambda",
-		},
-		StmtExpr{
-			Db:    "common",
 			Query: "UPDATE accounts SET label=? WHERE id=?;",
 			Index: "update_user_label",
 		},
@@ -123,11 +103,6 @@ func (dr *DataRouter) BuildStatements() {
 		},
 		StmtExpr{
 			Db:    "common",
-			Query: "INSERT INTO ierarxia (perigrafi,parentid) VALUES (?,?)",
-			Index: "create_ierarxia",
-		},
-		StmtExpr{
-			Db:    "common",
 			Query: "INSERT INTO adeies (type,idperson,start,end) VALUES (?,?,?,?)",
 			Index: "create_adeia",
 		},
@@ -143,7 +118,7 @@ func (dr *DataRouter) BuildStatements() {
 		},
 		StmtExpr{
 			Db:    "common",
-			Query: "DELETE FROM typoiypiresiwn where id = ?",
+			Query: "DELETE FROM typoiypiresiwn where id = ? and idmonadas = ?",
 			Index: "delete_typos_ypiresias",
 		},
 		StmtExpr{
@@ -153,7 +128,7 @@ func (dr *DataRouter) BuildStatements() {
 		},
 		StmtExpr{
 			Db:    "common",
-			Query: "DELETE FROM ypiresies where idypiresies = ?",
+			Query: "DELETE FROM ypiresies where idypiresies = ? and personid = ?",
 			Index: "delete_person_ypiresia",
 		},
 		StmtExpr{
@@ -165,6 +140,26 @@ func (dr *DataRouter) BuildStatements() {
 			Db:    "common",
 			Query: "DELETE FROM categories_adeiwn where id = ?",
 			Index: "delete_category_adeias",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO aitiseis (perigrafi,idperson,date) VALUES(?,?,CURDATE())",
+			Index: "create_aitisi",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM aitiseis where id = ? and idperson = ?",
+			Index: "delete_aitisi",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO anafores (perigrafi,idperson,date) VALUES(?,?,CURDATE())",
+			Index: "create_anafora",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM anafores where id = ? and idperson = ?",
+			Index: "delete_anafora",
 		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)

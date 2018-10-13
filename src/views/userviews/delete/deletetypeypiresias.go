@@ -29,7 +29,7 @@ func dtypeypiresias(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	stmt := datastorage.GetDataRouter().GetStmt("delete_typos_ypiresias")
-	res, err := stmt.Exec(idint)
+	res, err := stmt.Exec(idint, labelform)
 	affected, _ := res.RowsAffected()
 	if (err != nil) || affected < 1 {
 		utils.RedirectWithError(w, r, "/ypiresies", "Σφάλμα κατά την διαγραφή", err)
