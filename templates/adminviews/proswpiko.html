@@ -20,9 +20,61 @@
         <input type="submit" value="Δημιουργία">
     </form>
     <div>
-        {{range .Data.proswpiko}}
-        <a href="retrieveproswpiko?id={{.ID}}">{{.Name}} {{.Surname}} {{.Rank}}</a>
-        {{end}}
+    <div class="container-fluid">
+        <h3>Λίστα προσωπικού</h3>
+        <input type="text" id="search" onkeyup="search()" placeholder="Αναζήτηση">
+        <table id="proswpikoTable" class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Επίθετο</th>
+                    <th>Όνομα</th>
+                    <th>Βαθμός</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Data.proswpiko}}
+                <tr class="trlink" data-href="retrieveproswpiko?id={{.ID}}">
+                    <td>{{.Surname}}</td>
+                    <td>{{.Name}}</td>
+                    <td>{{.Rank}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
     </div>
 {{template "footer"}}
+<script>
+        $('tr[data-href]').on("click", function() {
+        document.location = $(this).data('href');
+        });
+</script>
+<script>
+    function search() {
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("search");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("proswpikoTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td0 = tr[i].getElementsByTagName("td")[0];
+            td2 =tr[i].getElementsByTagName("td")[2];
+            if (td0) {
+                if (td0.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+            if (td2) {
+                if (td2.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+
+        }
+    }
+</script>
 {{end}}

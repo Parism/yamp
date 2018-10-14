@@ -4,43 +4,61 @@
 {{.Context.Message}}
 <h3>Δημιουργία κατηγορίας Μεταβολής</h3>
 <div>
-    <form action="ccategoryadeias" method="POST">
-        <input type="text" name="categoryadeias" placeholder="Κατηγορία μεταβολής" required>
+    <form class="form-inline" action="ccategoryadeias" method="POST">
+        <div class="form-group">
+            <input class="form-control" type="text" name="categoryadeias" placeholder="Κατηγορία μεταβολής" required> 
+        </div>
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-        <input type="submit" value="Δημιουργία">
+        <button class="btn btn-primary" type="submit">Δημιουργία</button>
     </form>
 </div>
 <h3>Δημιουργία Μεταβολής</h3>
     <div>
-        <form action="ctyposadeias" method="POST">
-            <input type="text" name="typosadeias" placeholder="Τύπος μεταβολής" required>
-            <select name="category">
+        <form class="form-inline" action="ctyposadeias" method="POST">
+            <div class="form-group">
+                <input class="form-control" type="text" name="typosadeias" placeholder="Τύπος μεταβολής" required>
+            </div>
+            <div class="form-group">
+                <select class="form-control" name="category">
                 {{range .Data.categories}}
-                <option value={{.ID}}>{{.Category}}</option>
+                    <option value={{.ID}}>{{.Category}}</option>
                 {{end}}
-            </select>
+                </select>        
+            </div>
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-            <input type="submit" value="Δημιουργία">
+            <button class="btn btn-primary" type="submit">Δημιουργία</button>
         </form>
     </div>
     <h3>Λίστα Μεταβολών</h3>
     <div>
     {{$csrftoken := .Context.Csrftoken}}
+    <ul class="list-group">
     {{range $key := .Data.categories}}
-        <form action="dcategoryadeias" method="POST">
-            <strong>{{$key.Category}}</strong>
-            <input name="id" type="hidden" value="{{$key.ID}}">
-            <input name="csrftoken" value={{$csrftoken}} type="hidden">
-            <input type="submit" value="Διαγραφή">
-        </form>
-        {{range $adeia := index $.Data.adeies.Map $key.Category}}
-        <form action="dtyposadeias" method="POST">
-            <p>{{$adeia.TyposAdeias}}</p>
-            <input name="id" type="hidden" value="{{$adeia.ID}}">
-            <input name="csrftoken" value={{$csrftoken}} type="hidden">
-            <input type="submit" value="Διαγραφή">
-        </form>
-        {{end}}
+        <li class="list-group-item">
+            <form class="form-inline" action="dcategoryadeias" method="POST">
+                <strong>{{$key.Category}}</strong>
+                <input name="id" type="hidden" value="{{$key.ID}}">
+                <input name="csrftoken" value={{$csrftoken}} type="hidden">
+                <button type="submit" class="btn btn-default">
+                    <span class="glyphicon glyphicon-remove text-danger"></span>
+                </button>
+            </form>
+        </li>
+        <ul class="list-group">
+            {{range $adeia := index $.Data.adeies.Map $key.Category}}
+            <li class="list-group-item">
+                <form class="form-inline" action="dtyposadeias" method="POST">
+                    <span>{{$adeia.TyposAdeias}}</span>
+                    <input name="id" type="hidden" value="{{$adeia.ID}}">
+                    <input name="csrftoken" value={{$csrftoken}} type="hidden">
+                    <button type="submit" class="btn btn-default">
+                            <span class="glyphicon glyphicon-remove text-danger"></span>
+                    </button>
+                </form>
+            </li>
+            {{end}}
+        </ul>
+    </ul>
     {{end}}
     </div>
 {{template "footer"}}

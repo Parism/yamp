@@ -1,7 +1,9 @@
 {{define "dashboard"}}
 {{template "header"}}
 {{template "navbar"}}
-<p>Καλώς ήρθατε {{.Context.User}} στον Διαγόρα.</p>
-<p>Μπορείτε να περιηγηθείτε μέσω των παραπάνω συνδέσμων</p>
+<div class="container text-center">
+    <h3>Καλώς ήρθατε {{.Context.User}} στον Διαγόρα.</h3>
+    <h4>Μπορείτε να περιηγηθείτε μέσω των παραπάνω συνδέσμων</h4>        
+</div>
 {{template "footer"}}
 {{end}}

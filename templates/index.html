@@ -5,20 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Διαγόρας</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="js/bootstrap.js"></script>    
+    <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
-    <div>
-        <p>Σύνδεση</p>
+<div class="container-fluid">
+    <h3>Διαγόρας</h3>
+    <div class="text-center container">
+        <h3>Σύνδεση</h3>
         <form action="/login" method="POST">
-            <label>Όνομα </label><input name="username" placeholder="Όνομα χρήστη" type="text">
-            <label>Κωδικός</label><input name="password" placeholder="Κωδικός" type="password">
+            <div class="form-group">
+                <label>Όνομα </label>
+                <input class="form-control" name="username" placeholder="Όνομα χρήστη" type="text">
+            </div>
+            <div class="form-group">
+                <label>Κωδικός</label>
+                <input class="form-control" name="password" placeholder="Κωδικός" type="password">  
+            </div>
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-            <input type="submit" value="Σύνδεση">
+            <button type="submit" class="btn btn-primary">Σύνδεση</button>
         </form>
-    </div>
-    <p>Δοκιμαστικά διαπιστευτήρια:</p>
-    <p>Διαχειριστής: val:1234</p>
-    <p>{{.Context.Message}}</p>
+    </div><!--form container-->
+    <p class="text-danger">{{.Context.Message}}</p>
+</div><!--content container-->
 </body>
 </html>

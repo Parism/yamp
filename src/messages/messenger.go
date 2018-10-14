@@ -21,7 +21,7 @@ func SetMessage(r *http.Request, msg string) {
 	session.Sessionmap = make(map[string]string)
 	session.FromJSON(res)
 	session.SetKey("message", msg)
-	redisclient.Set(sessionid, session.ToJSON(), 2*time.Minute)
+	redisclient.Set(sessionid, session.ToJSON(), 60*time.Minute)
 }
 
 /*
@@ -39,7 +39,7 @@ func GetMessage(r *http.Request) string {
 	session.FromJSON(res)
 	msg := session.GetKey("message")
 	session.DeleteKey("message")
-	redisclient.Set(sessionid, session.ToJSON(), 20*time.Minute)
+	redisclient.Set(sessionid, session.ToJSON(), 60*time.Minute)
 	return msg
 }
 

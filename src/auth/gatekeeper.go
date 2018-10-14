@@ -112,8 +112,8 @@ func (gk *Gatekeeper) StoreSessionToDb(sessionid, role, username, label string, 
 	session.SetKey("csrftoken", utils.GetRandStringb64())
 	rc, _ := datastorage.GetDataRouter().GetDb("sessions")
 	redisclient := rc.GetRedisClient()
-	redisclient.Set(sessionid, session.ToJSON(), 20*time.Minute)
-	redisclient.ExpireAt(sessionid, time.Now().Add(20*time.Minute))
+	redisclient.Set(sessionid, session.ToJSON(), 60*time.Minute)
+	redisclient.ExpireAt(sessionid, time.Now().Add(60*time.Minute))
 	roleint, _ := strconv.Atoi(role)
 	if roleint >= variables.ADMIN {
 		http.Redirect(w, r, "/diaxeiristiko", http.StatusMovedPermanently)
@@ -172,6 +172,6 @@ func (gk *Gatekeeper) Logout(w http.ResponseWriter, r *http.Request) {
 	session := &authmodels.Session{}
 	session.FromJSON(jsonsession)
 	session.SetKey("isAuthenticated", "false")
-	redisclient.Set(sessionid, session.ToJSON(), 20*time.Minute)
+	redisclient.Set(sessionid, session.ToJSON(), 60*time.Minute)
 	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 }
