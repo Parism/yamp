@@ -1,48 +1,60 @@
 {{define "proswpiko"}}
 {{template "header"}}
 {{template "navbar"}}
-<h3>Δημιουργία προσωπικού</h3>
-    {{.Context.Message}}
-    <form action="cproswpiko" method="POST">
-        <input type="text" name="name" required placeholder="Όνομα">
-        <input type="text" name="surname" required placeholder="Επίθετο">
-        <select name = "rank" required>
+<div class="container-fluid">
+    <h3>Δημιουργία προσωπικού</h3>
+    <p class="text-danger">{{.Context.Message}}</p>
+    <form class="form-inline" action="cproswpiko" method="POST">
+        <div class="form-group">
+            <input class="form-control" type="text" name="name" required placeholder="Όνομα">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="surname" required placeholder="Επίθετο">
+        </div>
+        <div class="form-group">
+            <select name = "rank" required>
             {{range .Data.ranks}}
-            <option value={{.ID}}>{{.Rank}}</option>
+                <option value={{.ID}}>{{.Rank}}</option>
             {{end}}
-        </select>
-        <select name="label" required>
+            </select>                
+        </div>
+        <div class="form-group">
+            <select name="label" required>
             {{range .Data.ierarxia}}
-            <option value={{.ID}}>{{.Perigrafi}}</option>
+                <option value={{.ID}}>{{.Perigrafi}}</option>
             {{end}}
-        </select>    
+            </select>                        
+        </div>
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-        <input type="submit" value="Δημιουργία">
+        <button class="btn btn-primary" type="submit" value="Δημιουργία">Δημιουργία</button>
     </form>
-    <div>
-    <div class="container-fluid">
-        <h3>Λίστα προσωπικού</h3>
-        <input type="text" id="search" onkeyup="search()" placeholder="Αναζήτηση">
-        <table id="proswpikoTable" class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Επίθετο</th>
-                    <th>Όνομα</th>
-                    <th>Βαθμός</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{range .Data.proswpiko}}
-                <tr class="trlink" data-href="retrieveproswpiko?id={{.ID}}">
-                    <td>{{.Surname}}</td>
-                    <td>{{.Name}}</td>
-                    <td>{{.Rank}}</td>
-                </tr>
-                {{end}}
-            </tbody>
-        </table>
+</div>    
+<div class="container-fluid">
+    <h3>Λίστα προσωπικού</h3>
+    <div class="row">
+        <div class="col-sm-3">
+            <input class="form-control" type="text" id="search" onkeyup="search()" placeholder="Αναζήτηση"> 
+        </div>    
     </div>
-    </div>
+    <table id="proswpikoTable" class="table table-hover">
+        <thead>
+            <tr>
+                <th>Επίθετο</th>
+                <th>Όνομα</th>
+                <th>Βαθμός</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{range .Data.proswpiko}}
+            <tr class="trlink" data-href="retrieveproswpiko?id={{.ID}}">
+                <td>{{.Surname}}</td>
+                <td>{{.Name}}</td>
+                <td>{{.Rank}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
 {{template "footer"}}
 <script>
         $('tr[data-href]').on("click", function() {
