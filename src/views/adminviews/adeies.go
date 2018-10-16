@@ -12,6 +12,7 @@ import (
 func init() {
 	views.GetMux().HandleFunc("/typoiadeiwn", middleware.WithMiddleware(listtypoiadeiwn,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 		middleware.IsAdmin(),
 	))

@@ -9,7 +9,8 @@
             <input class="form-control" type="text" name="categoryadeias" placeholder="Κατηγορία μεταβολής" required> 
         </div>
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-        <button class="btn btn-primary" type="submit">Δημιουργία</button>
+        <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-floppy-saved"></span>
+            Δημιουργία</button>
     </form>
 </div>
 <h3>Δημιουργία Μεταβολής</h3>
@@ -19,14 +20,15 @@
                 <input class="form-control" type="text" name="typosadeias" placeholder="Τύπος μεταβολής" required>
             </div>
             <div class="form-group">
-                <select name="category">
+                <select class="form-control" name="category">
                 {{range .Data.categories}}
                     <option value={{.ID}}>{{.Category}}</option>
                 {{end}}
                 </select>        
             </div>
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-            <button class="btn btn-primary" type="submit">Δημιουργία</button>
+            <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-floppy-saved"></span>
+                Δημιουργία</button>
         </form>
     </div>
     <h3>Λίστα Μεταβολών</h3>

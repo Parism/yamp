@@ -16,6 +16,7 @@ import (
 func init() {
 	views.GetMux().HandleFunc("/retrieveproswpiko", middleware.WithMiddleware(rproswpiko,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 		middleware.IsUser(),
 	))

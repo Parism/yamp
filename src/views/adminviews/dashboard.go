@@ -11,6 +11,7 @@ import (
 func init() {
 	views.GetMux().HandleFunc("/diaxeiristiko", middleware.WithMiddleware(Diaxeiristiko,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 		middleware.IsAdmin(),
 	))

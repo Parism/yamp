@@ -12,18 +12,26 @@
     <h3>Διαγόρας</h3>
     <div class="text-center container">
         <h3>Σύνδεση</h3>
-        <form action="/login" method="POST">
-            <div class="form-group">
-                <label>Όνομα </label>
-                <input class="form-control" name="username" placeholder="Όνομα χρήστη" type="text">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <form action="/login" method="POST">
+                    <div class="form-group">
+                        <label>Όνομα </label>
+                        <input class="form-control" name="username" placeholder="Όνομα χρήστη" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Κωδικός</label>
+                        <input class="form-control" name="password" placeholder="Κωδικός" type="password">  
+                    </div>
+                    <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-log-in"></span>
+                        Σύνδεση</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label>Κωδικός</label>
-                <input class="form-control" name="password" placeholder="Κωδικός" type="password">  
-            </div>
-            <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-            <button type="submit" class="btn btn-primary">Σύνδεση</button>
-        </form>
+        </div>
+    
     </div><!--form container-->
     <p class="text-danger">{{.Context.Message}}</p>
 </div><!--content container-->

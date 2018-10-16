@@ -13,6 +13,7 @@ import (
 func init() {
 	views.GetMux().HandleFunc("/listusers", middleware.WithMiddleware(listusers,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 		middleware.IsAdmin(),
 	))

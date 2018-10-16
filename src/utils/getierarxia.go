@@ -15,7 +15,7 @@ func GetDimoiries(c chan []models.Ierarxia) {
 	ierarxia := models.Ierarxia{}
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
-	res, _ := dbc.Query("SELECT id,perigrafi from ierarxia;")
+	res, _ := dbc.Query("SELECT id,perigrafi from ierarxia where parentid;")
 	for res.Next() {
 		_ = res.Scan(
 			&ierarxia.ID,

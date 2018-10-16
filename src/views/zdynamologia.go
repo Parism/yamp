@@ -13,6 +13,7 @@ import (
 func init() {
 	GetMux().HandleFunc("/dynamologia", middleware.WithMiddleware(dynamologia,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 		middleware.IsUser(),
 	))

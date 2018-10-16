@@ -12,28 +12,32 @@
             <input class="form-control" type="text" name="surname" required placeholder="Επίθετο">
         </div>
         <div class="form-group">
-            <select name = "rank" required>
+            <select class="form-control" name="rank" required>
             {{range .Data.ranks}}
                 <option value={{.ID}}>{{.Rank}}</option>
             {{end}}
             </select>                
         </div>
         <div class="form-group">
-            <select name="label" required>
+            <select class="form-control" name="label" required>
             {{range .Data.ierarxia}}
                 <option value={{.ID}}>{{.Perigrafi}}</option>
             {{end}}
             </select>                        
         </div>
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-        <button class="btn btn-primary" type="submit" value="Δημιουργία">Δημιουργία</button>
+        <button class="btn btn-primary" type="submit" value="Δημιουργία"><span class="glyphicon glyphicon-floppy-saved"></span>
+            Δημιουργία</button>
     </form>
 </div>    
 <div class="container-fluid">
     <h3>Λίστα προσωπικού</h3>
     <div class="row">
-        <div class="col-sm-3">
-            <input class="form-control" type="text" id="search" onkeyup="search()" placeholder="Αναζήτηση"> 
+        <div class="col-sm-3 has-feedback">
+            <div class="form-group has-feedback">
+                <input class="form-control" type="text" id="search" onkeyup="search()" placeholder="Αναζήτηση"> 
+                <i class="glyphicon glyphicon-search form-control-feedback"></i>
+            </div>
         </div>    
     </div>
     <table id="proswpikoTable" class="table table-hover">
@@ -63,29 +67,19 @@
 </script>
 <script>
     function search() {
-        var input, filter, table, tr, td, i;
         input = document.getElementById("search");
         filter = input.value.toUpperCase();
-        table = document.getElementById("proswpikoTable");
-        tr = table.getElementsByTagName("tr");
-        for (i = 0; i < tr.length; i++) {
-            td0 = tr[i].getElementsByTagName("td")[0];
-            td2 =tr[i].getElementsByTagName("td")[2];
-            if (td0) {
-                if (td0.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
+        table = document.getElementById("proswpikoTable")
+        tr = table.getElementsByClassName("trlink");
+        for (var row in tr){
+            content = tr[row].textContent
+            if(content){
+                if(content.toUpperCase().indexOf(filter)> -1){
+                    tr[row].style.display = "";
+                }else{
+                    tr[row].style.display = "none"
                 }
             }
-            if (td2) {
-                if (td2.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-
         }
     }
 </script>

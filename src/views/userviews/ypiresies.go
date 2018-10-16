@@ -13,6 +13,7 @@ import (
 func init() {
 	views.GetMux().HandleFunc("/ypiresies", middleware.WithMiddleware(ypiresies,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 		middleware.CsrfProtection(),
 		middleware.IsUser(),

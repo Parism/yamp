@@ -12,6 +12,7 @@ import (
 func init() {
 	GetMux().HandleFunc("/listes", middleware.WithMiddleware(listes,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.CsrfProtection(),
 		middleware.NeedsSession(),
 		middleware.IsAdmin(),

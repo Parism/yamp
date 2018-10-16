@@ -10,6 +10,7 @@ func init() {
 	GetMux().HandleFunc("/logout",
 		middleware.WithMiddleware(Logout,
 			middleware.Time(),
+			middleware.NoCache(),
 			middleware.NeedsSession(),
 		))
 }

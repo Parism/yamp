@@ -1,5 +1,9 @@
 package models
 
+import (
+	"database/sql"
+)
+
 /*
 User struct
 is used to represent the user accounts
@@ -9,5 +13,5 @@ type User struct {
 	ID       int64
 	Username string
 	Role     string
-	Label    string
+	Label    sql.NullString
 }

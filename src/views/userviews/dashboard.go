@@ -11,6 +11,7 @@ import (
 func init() {
 	views.GetMux().HandleFunc("/dashboard", middleware.WithMiddleware(Dashboard,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 		middleware.IsUser(),
 	))

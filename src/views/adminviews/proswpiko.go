@@ -13,6 +13,7 @@ import (
 func init() {
 	views.GetMux().HandleFunc("/proswpiko", middleware.WithMiddleware(proswpiko,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 		middleware.IsAdmin(),
 	))

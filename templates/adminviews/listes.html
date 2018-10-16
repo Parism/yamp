@@ -4,7 +4,7 @@
 <div>
     <form class="form-inline" action="listes" method="POST">
         <div class="form-group">
-            <select name="label">
+            <select class="form-control" name="label">
                 <option value="" selected>-</option>
                     {{range .Data.labels}}
                     <option value={{.ID}}>{{.Perigrafi}}</option>
@@ -12,7 +12,7 @@
             </select>            
         </div>
         <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-        <button class="btn btn-sm btn-primary" type="submit">Ανάκτηση</button>
+        <button class="btn btn-primary" type="submit">Ανάκτηση</button>
     </form>
     <p class="text-danger">{{.Context.Message}}</p>    
 </div>

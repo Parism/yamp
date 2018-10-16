@@ -1,38 +1,63 @@
 {{define "ruser"}}
 {{template "header"}}
 {{template "navbar"}}
-    <div>
-        <h3>{{.Data.user.Username}} {{.Data.user.Role}}</h3>
-        {{if .Data.user.Label}}
-        <p>{{.Data.user.Label}}</p>
-        {{end}}
+<div class="row">
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading text-left">{{.Data.user.Role}}</div>
+            <div class="panel-body" text-center>
+            {{.Data.user.Username}}
+            {{if .Data.user.Label.Valid}}
+            <p>Συνδεδεμένος με {{.Data.user.Label.Value}}</p>
+            {{end}}
+            {{if not .Data.user.Label.Valid}}
+            <p>Δεν υπάρχει σύνδεση με βάση</p>
+            {{end}}
+            </div>
+            <div class="panel-footer text-center">
+                <form class="form-inline" action="deleteuser" method="POST">
+                    <input type="hidden" name="id" value={{.Data.user.ID}}>
+                    <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+                    <button class="btn btn-danger">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        Διαγραφή χρήστη</button>    
+                </form>
+            </div>
+        </div>
     </div>
-    <div>{{.Context.Message}}</div>
+</div>
+    <p class="text-info">{{.Context.Message}}</p>
     <div>
-        <form action="changepass" method="POST">
-            <input type="password" required name="password1" placeholder="Κωδικός">
-            <input type="password" required name="password2" placeholder="Επιβεβαίωση κωδικού">
+        <h3>Αλλαγή κωδικού πρόσβασης</h3>
+        <form class="form-inline" action="changepass" method="POST">
+            <div class="form-group">
+                <input class="form-control" type="password" required name="password1" placeholder="Κωδικός"> 
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" required name="password2" placeholder="Επιβεβαίωση κωδικού">    
+            </div>
             <input type="hidden" name="username" value={{.Data.user.Username}}>
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-            <input type="submit" value="Αλλαγή κωδικού">
-        </form>
-        <form action="deleteuser" method="POST">
-                <input type="hidden" name="id" value={{.Data.user.ID}}>
-                <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-                <input type="submit" value="Διαγραφή λογαριασμού">    
+            <button type="submit" class="btn btn-primary">
+                <span class="glyphicon glyphicon-edit"></span>
+                 Αλλαγή κωδικού</button>
         </form>
     </div>
     <div>
         <h3>Σύνδεση με βάσεις</h3>
-        <form action="updateuserlabel" method="POST">
-            <select name="label">
-                {{range .Data.ierarxia}}
+        <form class="form-inline" action="updateuserlabel" method="POST">
+            <div class="form-group">
+                <select class="form-control" name="label">
+                    {{range .Data.ierarxia}}
                     <option value={{.ID}}>{{.Name}}</option>
-                {{end}}
-            </select>
+                    {{end}}
+                </select>            
+            </div>
             <input type="hidden" name="id" value={{.Data.user.ID}}>
             <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-            <input type="submit" value="Αποθήκευση">
+            <button class="btn btn-primary">
+                <span class="glyphicon glyphicon-floppy-saved"></span>
+                Αποθήκευση</button>
         </form>
     </div>
 {{template "footer"}}

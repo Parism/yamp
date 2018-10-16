@@ -16,6 +16,7 @@ import (
 func init() {
 	views.GetMux().HandleFunc("/getdyn", middleware.WithMiddleware(getdyn,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 		middleware.IsUser(),
 	))

@@ -9,6 +9,7 @@ import (
 func init() {
 	GetMux().HandleFunc("/login", middleware.WithMiddleware(login,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 		middleware.CsrfProtection(),
 	))

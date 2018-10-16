@@ -10,6 +10,7 @@ import (
 func init() {
 	GetMux().HandleFunc("/", middleware.WithMiddleware(index,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 	))
 }
@@ -28,5 +29,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 	data := data{}
 	data.Context = context
 	t := template.Must(template.ParseFiles("./templates/index.html"))
+	w.Header().Set("Server", "diagoras v0.1")
 	t.Execute(w, data)
 }

@@ -13,6 +13,7 @@ import (
 func init() {
 	views.GetMux().HandleFunc("/stelexh", middleware.WithMiddleware(stelexh,
 		middleware.Time(),
+		middleware.NoCache(),
 		middleware.NeedsSession(),
 		middleware.IsUser(),
 	))
