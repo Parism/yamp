@@ -68,21 +68,6 @@ func (dr *DataRouter) BuildStatements() {
 		},
 		StmtExpr{
 			Db:    "common",
-			Query: "DELETE FROM dbaccess WHERE user=?;",
-			Index: "delete_user_db",
-		},
-		StmtExpr{
-			Db:    "common",
-			Query: "INSERT INTO dbaccess (dbname,user) VALUES(?,?);",
-			Index: "create_db_access",
-		},
-		StmtExpr{
-			Db:    "common",
-			Query: "SELECT dbname FROM dbaccess where user=?;",
-			Index: "select_db_access",
-		},
-		StmtExpr{
-			Db:    "common",
 			Query: "UPDATE accounts SET label=? WHERE id=?;",
 			Index: "update_user_label",
 		},
@@ -160,6 +145,16 @@ func (dr *DataRouter) BuildStatements() {
 			Db:    "common",
 			Query: "DELETE FROM anafores where id = ? and idperson = ?",
 			Index: "delete_anafora",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO ergasies (perigrafi,idperson,date) VALUES (?,?,CURDATE())",
+			Index: "create_ergasia",
+		},
+		StmtExpr{
+			Db:    "common",
+			Query: "DELETE FROM ergasies where id = ? and idperson = ?",
+			Index: "delete_ergasia",
 		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)

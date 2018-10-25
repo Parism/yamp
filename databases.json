@@ -1,0 +1,32 @@
+[
+    {
+        "id": "db11",
+        "username": "root", 
+        "password": "123456789", 
+        "link": "localhost:3306", 
+        "database": "db11",
+        "type": "mysql"
+    }, 
+    {
+        "id": "db21",
+        "username": "root", 
+        "password": "123456789", 
+        "link": "localhost:3306", 
+        "database": "db21",
+        "type": "mysql"
+    },
+    {
+        "id": "common",
+        "username": "root", 
+        "password": "123456789", 
+        "link": "localhost:3306", 
+        "database": "common",
+        "type": "mysql"
+    },
+    {
+        "id": "sessions",
+        "link": "localhost:6379",
+        "database": "0",
+        "type": "redis"
+    }
+]

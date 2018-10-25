@@ -22,31 +22,68 @@
         </div>
     </div>
 </div>
-<p class="text-info">{{.Context.Message}}</p>
 {{$csrftoken := .Context.Csrftoken}}
 {{$personid := .Data.Proswpiko.ID}}      
-{{if ge .Context.Role 3}}
-<div>
-<h3>Μετάθεση</h3>
-    <form class="form-inline" action="metathesi" method="POST">
-        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
-        <input type="hidden" name="id" value={{.Data.Proswpiko.ID}}>
-        <div class="form-group">
-            <select class="form-control" name="label" required>
-            {{range .Data.Ierarxia}}
-                <option value={{.ID}}>{{.Perigrafi}}</option>
-            {{end}}
-            </select>
-        </div>
-        <button class="btn btn-primary" type="submit">
-            <span class="glyphicon glyphicon-globe"></span>
-            Μετάθεση</button>
-    </form>
-</div> <!--metathesi-->
-{{end}}
 
-<div>
-    <h3>Μεταβολές</h3>
+<ul class="nav nav-tabs">
+    <li class="dropdown">
+        <a class="dropdown-toggle active" data-toggle="dropdown" href="#">Μεταβολές
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a data-toggle="tab" href="#cmetaboli">Δημιουργία</a></li>
+            <li><a data-toggle="tab" href="#lmetaboli">Λίστα μεταβολών</a></li>
+        </ul>
+    </li>
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Υπηρεσίες
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                {{if le .Context.Role 2}}
+                <li><a data-toggle="tab" href="#cypiresia">Δημιουργία</a></li>
+                {{end}}
+              <li><a data-toggle="tab" href="#lypiresies">Λίστα υπηρεσιών</a></li> 
+            </ul>
+    </li>
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Αιτήσεις
+        <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            {{if le .Context.Role 2}}
+            <li><a data-toggle="tab" href="#caitisi">Δημιουργία</a></li>
+            {{end}}
+          <li><a data-toggle="tab" href="#laitisi">Λίστα αιτήσεων</a></li> 
+        </ul>       
+    </li>
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Αναφορές
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                {{if le .Context.Role 2}}
+                <li><a data-toggle="tab" href="#canafora">Δημιουργία</a></li>
+                {{end}}
+              <li><a data-toggle="tab" href="#lanafora">Λίστα αναφορών</a></li> 
+            </ul>
+        </a>       
+    </li>
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Εργασίες
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a data-toggle="tab" href="#cergasia">Δημιουργία</a></li>
+                <li><a data-toggle="tab" href="#lergasia">Λίστα εργασιών</a></li> 
+            </ul>
+        </a>       
+    </li>
+    {{if ge .Context.Role 3}}
+    <li><a data-toggle="tab" href="#metathesi">Μετάθεση</a></li>
+    <li><a data-toggle="tab" href="#vathmos">Αλλαγή βαθμού</a></li>
+    {{end}}
+</ul>
+
+<div class="tab-content">
+
+<div id="cmetaboli" class="tab-pane fade in">
     <h4>Προσθήκη μεταβολής <span class="glyphicon glyphicon-info-sign text-info" data-toggle="tooltip" title="Μπορείτε να προσθέσετε μεταβολή μίας ημέρας αν βάλετε ημερομηνία μόνο στο πεδίο Από."></span></h4>
     <form class="form-inline" action="cadeia" method="POST">
         <div class="form-group">
@@ -72,6 +109,10 @@
             <span class="glyphicon glyphicon-plus"></span>
             Προσθήκη</button>
     </form>
+    
+</div>
+
+<div id="lmetaboli" class="tab-pane fade in">
     {{if not .Data.Adeies}}
     <h4>Καμία μεταβολή</h4>
     {{end}}
@@ -81,27 +122,27 @@
         <ul class="list-group">
         {{range .Data.Adeies}}
         <div class="row">
-                <li class="list-group-item col-sm-4">
-                    <span>{{.Repr}}</span>
-                    <form action="dadeia" method="POST">
-                        <input type="hidden" name="csrftoken" value={{$csrftoken}}>
-                        <input type="hidden" name="id" value={{.ID}}>
-                        <input type="hidden" name="personid" value={{$personid}}>
-                        <button type="submit" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-trash"></span>
-                            Διαγραφή</button>
-                    </form>
-                    </li>
+            <li class="list-group-item col-sm-4">
+                <span>{{.Repr}}</span>
+                <form action="dadeia" method="POST">
+                    <input type="hidden" name="csrftoken" value={{$csrftoken}}>
+                    <input type="hidden" name="id" value={{.ID}}>
+                    <input type="hidden" name="personid" value={{$personid}}>
+                    <button type="submit" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        Διαγραφή
+                    </button>
+                </form>
+            </li>
         </div>
         {{end}}
         </ul>
     </div>
     {{end}}
-</div> <!--metaboles-->
+</div>
 
-<div>
-    <h3>Υπηρεσίες</h3>
-    {{if le .Context.Role 2}}
+{{if le .Context.Role 2}}
+<div id="cypiresia" class="tab-pane fade in">
     <h4>Προσθήκη υπηρεσίας</h4>
     <form class="form-inline" action="cpersonypiresia" method="POST">
         <div class="form-group">
@@ -116,7 +157,9 @@
         <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>
             Προσθήκη</button>   
     </form>
-    {{end}}
+</div>
+{{end}}
+<div id="lypiresies" class="tab-pane fade in">
     {{if not .Data.Ypiresies}}
     <h4>Καμία υπηρεσία</h4>
     {{end}}
@@ -125,8 +168,8 @@
     <div class="container-fluid">
         <ul class="list-group">
         {{range .Data.Ypiresies}}
-            <div class="row">
-                <li class="list-group-item col-sm-4">
+        <div class="row">
+            <li class="list-group-item col-sm-4">
                 <span>{{.Perigrafi}} {{.Date}}</span>
                 <form class="form-inline" action="dpersonypiresia" method="POST">
                     <input type="hidden" name="csrftoken" value={{$csrftoken}}>
@@ -137,16 +180,15 @@
                         Διαγραφή
                     </button>
                 </form>        
-                </li>
-            </div>
+            </li>
+        </div>
         {{end}}
         </ul>
     </div>
     {{end}}   
-</div><!--ypiresies-->
+</div>
 
-<div>
-    <h3>Αιτήσεις</h3>
+<div id="caitisi" class="tab-pane fade in">
     <h4>Προσθήκη αίτησης</h4>
     <form class="form-inline" action="caitisi" method="POST">
             <input type="hidden" name="csrftoken" value={{$csrftoken}}>
@@ -157,6 +199,9 @@
                 Προσθήκη
             </button>
     </form>
+</div>
+
+<div id="laitisi" class="tab-pane fade in">
     {{if not .Data.Aitiseis}}
     <h4>Καμία αίτηση</h4>
     {{end}}
@@ -164,30 +209,72 @@
     <h4>Αιτήσεις</h4>
     <div class="container-fluid">
         <ul class="list-group">
-            {{range .Data.Aitiseis}}
+        {{range .Data.Aitiseis}}
             <div class="row">
-            <li class="list-group-item col-sm-4">
-                <span>Αίτηση για {{.Perigrafi}}, καταχωρήθηκε την {{.Date}}</span>
-                <form class="form-inline" action="daitisi" method="POST">
-                    <input type="hidden" name="csrftoken" value={{$csrftoken}}>
-                    <input type="hidden" name="id" value={{.ID}}>
-                    <input type="hidden" name="personid" value={{$personid}}>
-                    <button type="submit" class="btn btn-danger">
-                        <span class="glyphicon glyphicon-trash"></span>
-                        Διαγραφή
-                    </button>
-                </form>
+                <li class="list-group-item col-sm-4">
+                    <span>Αίτηση για {{.Perigrafi}}, καταχωρήθηκε την {{.Date}}</span>
+                    <form class="form-inline" action="daitisi" method="POST">
+                        <input type="hidden" name="csrftoken" value={{$csrftoken}}>
+                        <input type="hidden" name="id" value={{.ID}}>
+                        <input type="hidden" name="personid" value={{$personid}}>
+                        <button type="submit" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            Διαγραφή
+                        </button>
+                    </form>
+                </li>
             </div>
-            </li>
-            {{end}}
+        {{end}}
         </ul>
     </div>
     {{end}}
 </div>
-<div>
-    <h3>Αναφορές</h3>
+
+<div id="canafora" class="tab-pane fade in">
     <h4>Προσθήκη αναφοράς</h4>
     <form class="form-inline" action="canafora" method="POST">
+        <input type="hidden" name ="csrftoken" value={{$csrftoken}}>
+        <input type="hidden" name="personid" value={{$personid}}>
+        <input type="text" name="perigrafi">
+        <button type="submit" class="btn btn-primary">
+            <span class="glyphicon glyphicon=plus"></span>
+            Προσθήκη
+        </button>
+    </form>
+</div>
+
+<div id="lanafora" class="tab-pane fade in">
+    {{if not .Data.Anafores}}
+    <h4>Καμία αναφορά</h4>
+    {{end}}
+    {{if .Data.Anafores}}
+    <h4>Αναφορές</h4>
+    <div class="container-fluid">
+        <ul class="list-group">
+        {{range .Data.Anafores}}
+            <div class="row">
+                <li class="list-group-item col-sm-4">
+                    <span>{{.Perigrafi}}, καταχωρήθηκε την {{.Date}}</span>
+                    <form class="form-inline" action="danafora" method="POST">
+                        <input type="hidden" name="csrftoken" value={{$csrftoken}}>
+                        <input type="hidden" name="id" value={{.ID}}>
+                        <input type="hidden" name="personid" value={{$personid}}>
+                        <button type="submit" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            Διαγραφή
+                        </button>
+                    </form>
+                </li>
+            </div>
+        {{end}}
+        </ul>
+    </div>
+    {{end}}
+</div>
+
+<div id="cergasia" class="tab-pane fade in">
+    <h4>Προσθήκη εργασίας</h4>
+    <form class="form-inline" action="cergasia" method="POST">
         <input type="hidden" name="csrftoken" value={{$csrftoken}}>
         <input type="hidden" name="personid" value={{$personid}}>
         <input type="text" name="perigrafi">
@@ -196,18 +283,21 @@
             Προσθήκη
         </button>
     </form>
-    {{if not .Data.Anafores}}
-    <h4>Καμία αναφορά</h4>
+</div>
+
+<div id="lergasia" class="tab-pane fade in">
+    {{if not .Data.Ergasies}}
+    <h4>Καμία Εργασία</h4>
     {{end}}
-    {{if .Data.Anafores}}
-    <h4>Αναφορές</h4>
+    {{if .Data.Ergasies}}
+    <h4>Εργασίες</h4>
     <div class="container-fluid">
         <ul class="list-group">
-            {{range .Data.Anafores}}
+            {{range .Data.Ergasies}}
             <div class="row">
                 <li class="list-group-item col-sm-4">
                     <span>{{.Perigrafi}}, καταχωρήθηκε την {{.Date}}</span>
-                    <form action="danafora" method="POST">
+                    <form action="dergasia" method="POST">
                         <input type="hidden" name="csrftoken" value={{$csrftoken}}>
                         <input type="hidden" name="personid" value={{$personid}}>
                         <input type="hidden" name=id value={{.ID}}>
@@ -221,8 +311,53 @@
             {{end}}
         </ul>
     </div>
-</div>
     {{end}}
+</div> 
+
+{{if ge .Context.Role 3}}
+<div id="metathesi" class="tab-pane fade in">
+    <h3>Μετάθεση</h3>
+    <form class="form-inline" action="/metathesi" method="POST">
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <input type="hidden" name="id" value={{.Data.Proswpiko.ID}}>
+        <div class="form-group">
+            <select class="form-control" name="label" required>
+            {{range .Data.Ierarxia}}
+                <option value={{.ID}}>{{.Perigrafi}}</option>
+            {{end}}
+            </select>
+        </div>
+        <button class="btn btn-primary" type="submit">
+            <span class="glyphicon glyphicon-globe"></span>
+            Μετάθεση</button>
+    </form>
+</div> <!--metathesi-->
+<div id="vathmos" class="tab-pane fade in">
+    <h3>Αλλαγή βαθμού</h3>    
+    <form class="form-inline" action="/allagivathmou" method="POST">
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <input type="hidden" name="id" value={{.Data.Proswpiko.ID}}>
+        <div class="form-group">
+            <select class="form-control" name="rank" required>
+            {{range .Data.Ranks}}
+                <option value={{.ID}}>{{.Rank}}</option>
+            {{end}}
+            </select>
+        </div>
+        <button class="btn btn-primary" type="submit">
+            <span class="glyphicon glyphicon-globe"></span>
+            Αλλαγή
+        </button>   
+    </form>
+</div> <!--allagi bathmou-->
+{{end}}<!--telos energeiwn admin kai panw-->
+
+</div><!--tabcontent-->
+<div class="msg container-fluid">
+    <p class="text-info">{{.Context.Message}}</p>
+</div>
 {{template "footer"}}
 <script src="js/diagoras/datemod.js"></script>
+<script src="js/diagoras/fadeoutmsg.js"></script>
+<script src="js/bootstrap.min.js"></script>
 {{end}}

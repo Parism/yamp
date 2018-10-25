@@ -48,7 +48,7 @@ function parseDataFull(data){
                 lielement.style = "list-style:none"
                 span1 = document.createElement('span')
                 a = document.createElement('a')
-                a.setAttribute('href',"retrieveproswpiko?id="+temp[i]);
+                a.setAttribute('href',"retrieveproswpiko?id="+temp[i].id);
                 a.innerHTML = temp[i].surname+" "+temp[i].name;
                 span1.appendChild(a)
                 lielement.appendChild(span1)

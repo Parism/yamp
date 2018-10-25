@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	views.GetMux().HandleFunc("/danafora", middleware.WithMiddleware(danafora,
+	views.GetMux().HandleFunc("/dergasia", middleware.WithMiddleware(dergasia,
 		middleware.Time(),
 		middleware.NeedsSession(),
 		middleware.CsrfProtection(),
@@ -19,21 +19,21 @@ func init() {
 	))
 }
 
-func danafora(w http.ResponseWriter, r *http.Request) {
+func dergasia(w http.ResponseWriter, r *http.Request) {
 	personid := r.PostFormValue("personid")
 	personidint, _ := strconv.Atoi(personid)
-	anaforaid := r.PostFormValue("id")
-	anaforaidint, _ := strconv.Atoi(anaforaid)
+	ergasiaid := r.PostFormValue("id")
+	ergasiaidint, _ := strconv.Atoi(ergasiaid)
 	if !utils.CanActOnPerson(r, personidint) {
 		utils.RedirectWithError(w, r, "/retrieveproswpiko?id="+personid, "Μη αυθεντικοποιημένο αίτημα", nil)
 		return
 	}
-	stmt := datastorage.GetDataRouter().GetStmt("delete_anafora")
-	_, err := stmt.Exec(anaforaidint, personidint)
+	stmt := datastorage.GetDataRouter().GetStmt("delete_ergasia")
+	_, err := stmt.Exec(ergasiaidint, personidint)
 	if err != nil {
-		utils.RedirectWithError(w, r, "/retrieveproswpiko?id="+personid, "Σφάλμα κατά την διαγραφή της αναφοράς", err)
+		utils.RedirectWithError(w, r, "/retrieveproswpiko?id="+personid, "Σφάλμα κατά την διαγραφή της εργασίας", err)
 		return
 	}
-	messages.SetMessage(r, "Επιτυχής διαγραφή αναφοράς")
+	messages.SetMessage(r, "Επιτυχής διαγραφή εργασίας")
 	http.Redirect(w, r, "/retrieveproswpiko?id="+personid, http.StatusMovedPermanently)
 }

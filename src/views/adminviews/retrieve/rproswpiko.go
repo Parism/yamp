@@ -40,12 +40,16 @@ func rproswpiko(w http.ResponseWriter, r *http.Request) {
 	cadeies := make(chan []models.Adeia)
 	caitiseis := make(chan []models.Aitisi)
 	canafores := make(chan []models.Anafora)
+	cergasies := make(chan []models.Ergasia)
+	cranks := make(chan []models.Rank)
 	go utils.GetTypoiAdeiwn(ctypoiadeiwn)
 	go utils.GetDimoiries(cierarxia)
 	go utils.GetAdeies(idint, cadeies)
 	go utils.GetPersonYpiresies(idint, cypiresies)
 	go utils.GetPersonAitiseis(idint, caitiseis)
 	go utils.GetPersonAnafores(idint, canafores)
+	go utils.GetPersonErgasies(idint, cergasies)
+	go utils.GetRanks(cranks)
 	label, _ := strconv.Atoi(utils.GetSessionValue(r, "label"))
 	go utils.GetTypoiYpiresiwn(label, ctypoiypiresiwn)
 	db, _ := datastorage.GetDataRouter().GetDb("common")
@@ -78,6 +82,8 @@ func rproswpiko(w http.ResponseWriter, r *http.Request) {
 	datamap["Ypiresies"] = <-cypiresies
 	datamap["Aitiseis"] = <-caitiseis
 	datamap["Anafores"] = <-canafores
+	datamap["Ergasies"] = <-cergasies
+	datamap["Ranks"] = <-cranks
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
 	data.Data = datamap

@@ -12,7 +12,6 @@ import (
 	"strconv"
 	"time"
 	"utils"
-	"variables"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -114,14 +113,15 @@ func (gk *Gatekeeper) StoreSessionToDb(sessionid, role, username, label string, 
 	redisclient := rc.GetRedisClient()
 	redisclient.Set(sessionid, session.ToJSON(), 60*time.Minute)
 	redisclient.ExpireAt(sessionid, time.Now().Add(60*time.Minute))
-	roleint, _ := strconv.Atoi(role)
+	http.Redirect(w, r, "/welcome", http.StatusFound)
+	/*roleint, _ := strconv.Atoi(role)
 	if roleint >= variables.ADMIN {
 		http.Redirect(w, r, "/diaxeiristiko", http.StatusMovedPermanently)
 		return
 	} else if roleint <= variables.CAPTAIN {
 		http.Redirect(w, r, "/dashboard", http.StatusMovedPermanently)
 		return
-	}
+	}*/
 }
 
 /*
