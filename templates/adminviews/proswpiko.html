@@ -1,0 +1,86 @@
+{{define "proswpiko"}}
+{{template "header"}}
+{{template "navbar"}}
+<div class="container-fluid">
+    <h3>Δημιουργία προσωπικού</h3>
+    <p class="text-danger">{{.Context.Message}}</p>
+    <form class="form-inline" action="cproswpiko" method="POST">
+        <div class="form-group">
+            <input class="form-control" type="text" name="name" required placeholder="Όνομα">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="surname" required placeholder="Επίθετο">
+        </div>
+        <div class="form-group">
+            <select class="form-control" name="rank" required>
+            {{range .Data.ranks}}
+                <option value={{.ID}}>{{.Rank}}</option>
+            {{end}}
+            </select>                
+        </div>
+        <div class="form-group">
+            <select class="form-control" name="label" required>
+            {{range .Data.ierarxia}}
+                <option value={{.ID}}>{{.Perigrafi}}</option>
+            {{end}}
+            </select>                        
+        </div>
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <button class="btn btn-primary" type="submit" value="Δημιουργία"><span class="glyphicon glyphicon-floppy-saved"></span>
+            Δημιουργία</button>
+    </form>
+</div>    
+<div class="container-fluid">
+    <h3>Λίστα προσωπικού</h3>
+    <div class="row">
+        <div class="col-sm-3 has-feedback">
+            <div class="form-group has-feedback">
+                <input class="form-control" type="text" id="search" onkeyup="search()" placeholder="Αναζήτηση"> 
+                <i class="glyphicon glyphicon-search form-control-feedback"></i>
+            </div>
+        </div>    
+    </div>
+    <table id="proswpikoTable" class="table table-hover">
+        <thead>
+            <tr>
+                <th>Επίθετο</th>
+                <th>Όνομα</th>
+                <th>Βαθμός</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{range .Data.proswpiko}}
+            <tr class="trlink" data-href="retrieveproswpiko?id={{.ID}}">
+                <td>{{.Surname}}</td>
+                <td>{{.Name}}</td>
+                <td>{{.Rank}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+{{template "footer"}}
+<script>
+        $('tr[data-href]').on("click", function() {
+        document.location = $(this).data('href');
+        });
+</script>
+<script>
+    function search() {
+        input = document.getElementById("search");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("proswpikoTable")
+        tr = table.getElementsByClassName("trlink");
+        for (var row in tr){
+            content = tr[row].textContent
+            if(content){
+                if(content.toUpperCase().indexOf(filter)> -1){
+                    tr[row].style.display = "";
+                }else{
+                    tr[row].style.display = "none"
+                }
+            }
+        }
+    }
+</script>
+{{end}}

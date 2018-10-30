@@ -1,0 +1,46 @@
+{{define "ypiresies"}}
+{{template "header"}}
+{{template "navbar"}}
+{{.Context.Message}}
+<div>
+    <p>Δημιουργία νέας υπηρεσίας</p>
+    <form action="ctypeypiresias" method="POST">
+        <select  name="label" required>
+        {{range .Data.labels}}
+        <option value={{.ID}}>{{.Perigrafi}}</option>
+        {{end}}
+        </select>
+        <input type="text" name="perigrafi" placeholder="Τύπος υπηρεσίας">
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <input type="submit" value="Προσθήκη">
+    </form>
+</div>
+<div>
+    <p>Λίστα υπηρεσιών</p>
+    <form action="ypiresies" method="POST">
+        <select  name="label" required>
+            {{range .Data.labels}}
+                <option value={{.ID}}>{{.Perigrafi}}</option>
+            {{end}}
+        </select>
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <input type="submit" value="Ανάκτηση">
+    </form>
+<ul>
+{{$csrftoken := .Context.Csrftoken}}
+{{$label := .Context.Label}}
+{{range .Data.ypiresies}}
+<li>
+    {{.Perigrafi}}
+    <form action="dtypeypiresias" method="POST">
+        <input type="hidden" name="csrftoken" value={{$csrftoken}}>
+        <input type="hidden" name="id" value={{.ID}}>
+        <input type="hidden" name="label" value={{$label}}>
+        <input type="submit" value="Διαγραφή">
+    </form>
+</li>
+{{end}}
+</ul>
+</div>
+{{template "footer"}}
+{{end}}

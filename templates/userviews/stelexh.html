@@ -1,0 +1,29 @@
+{{define "stelexh"}}
+{{template "header"}}
+{{template "navbar"}}
+{{.Context.Message}}
+<div class="container-fluid">
+<form class="form-inline" action="stelexh" method="POST">
+    <select class="form-control" name="label" required>
+        {{range .Data.labels}}
+            <option value={{.ID}}>{{.Perigrafi}}</option>
+        {{end}}
+    </select>
+    <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+    <button class="btn btn-primary" type="submit">
+        <span class="glyphicon glyphicon-arrow-down"></span>
+        Ανάκτηση
+    </button>
+</form>
+<br>
+{{range $key := .Data.rankmap.Keys}}
+    <strong>{{$key}}</strong>
+    <ul>
+    {{range $person := index $.Data.rankmap.Map $key}}
+        <li style="list-style:none"><a href="retrieveproswpiko?id={{$person.ID}}">{{$person.Surname}} {{$person.Name}}</a></li>
+    {{end}}
+    </ul>
+{{end}}
+</div>
+{{template "footer"}}
+{{end}}

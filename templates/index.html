@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Διαγόρας</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+<div class="container-fluid">
+    <h3>Διαγόρας</h3>
+    <div class="text-center container">
+        <h3>Σύνδεση</h3>
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <form action="/login" method="POST">
+                    <div class="form-group">
+                        <label>Όνομα </label>
+                        <input class="form-control" name="username" placeholder="Όνομα χρήστη" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Κωδικός</label>
+                        <input class="form-control" name="password" placeholder="Κωδικός" type="password">  
+                    </div>
+                    <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-log-in"></span>
+                        Σύνδεση</button>
+                </form>
+            </div>
+        </div>
+    
+    </div><!--form container-->
+    <p class="text-danger">{{.Context.Message}}</p>
+</div><!--content container-->
+</body>
+</html>

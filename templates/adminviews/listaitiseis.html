@@ -1,0 +1,45 @@
+{{define "listaitiseis"}}
+{{template "header"}}
+{{template "navbar"}}
+<h4>Λίστα ανοιχτών αιτήσεων</h4>
+{{if not .Aitiseis}}
+<p>Καμία νέα αίτηση</p>
+{{end}}
+{{if .Aitiseis}}
+<div class="row">
+    <div class="col-sm-7">
+        <table id="aitiseisTable" class="table table-hover">
+    <thead>
+        <tr>
+            <th>Περιγραφή</th>
+            <th>Βαθμός</th>
+            <th>Επίθετο</th>
+            <th>Όνομα</th>
+            <th>Hμερομηνία</th>
+            <th>Μονάδα</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range .Aitiseis}}
+        <tr class="aitisi" data-idaitisi={{.ID}}>
+            <td>{{.Perigrafi}}</td>
+            <td>{{.Rank}}</td>
+            <td>{{.Surname}}</td>
+            <td>{{.Name}}</td>
+            <td>{{.Date}}</td>
+            <td>{{.Monada}}</td>
+            <td><a href="" role="button" class="btn btn-success">Έγκριση <span class="glyphicon glyphicon-ok"></span></a></td>
+            <td><a href="" role="button" class="btn btn-danger">Απόρριψη <span class="glyphicon glyphicon-remove"></span></a></td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+    <a href="#" id="loadmore">
+        <div  id="loadmorecontent" class="well text-center">Περισσότερες (<span id="counter">{{.CountAitiseis}}</span>)</div>
+    </a>
+    </div><!--col-->
+</div><!--row-->
+{{end}}
+{{template "footer"}}
+<script src="js/diagoras/aitiseiscounter.js"></script>
+{{end}}

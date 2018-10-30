@@ -1,0 +1,39 @@
+{{define "users"}}
+{{template "header"}}
+{{template "navbar"}}
+<div class="container-fluid">
+<h3>Δημιουργία χρήστη</h3>
+    <form class="form-inline" action="cuser" method="POST">
+        <div class="form-group">
+            <input class="form-control" type="text" name="username" placeholder="Όνομα χρήστη" required>
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="password1" placeholder="Κωδικός" required>
+        </div>
+        <div class="form-group"> 
+           <input class="form-control" type="password" name="password2" placeholder="Επιβεβαίωση κωδικού" required>
+        </div>
+        <div class="form-group">
+            <select class="form-control" name="role">
+                {{range .Data.Roles}}
+                <option value={{.Role}}>{{.Rolestring}}</option>
+                {{end}}
+            </select>
+        </div>        
+        <input type="hidden" name="csrftoken" value={{.Context.Csrftoken}}>
+        <button type="submit" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-saved"></span> Δημιουργία</button>
+    </form>
+    <p class="text-info">{{.Context.Message}}</p>
+</div>
+<div class="container-fluid">
+    <h3>Λίστα χρηστών</h3>
+    <ul class="list-group">
+        {{range .Data.Users}}
+        <li class="list-group-item"><a href="retrieveuser?id={{.ID}}">{{.Username}} - {{.RealRole}}</a></li>
+        {{end}}
+    </ul>
+</div>
+    
+{{template "footer"}}
+{{end}}
