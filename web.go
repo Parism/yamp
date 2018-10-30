@@ -17,5 +17,6 @@ import (
 
 func main() {
 	log.Println("Server started..")
+	log.Println("Server started on Windows")
 	http.ListenAndServe(":8000", views.GetMux())
 }
