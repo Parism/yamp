@@ -1,0 +1,15 @@
+{{define "epopteia"}}
+{{template "header"}}
+{{template "navbar"}}
+<h4>Στατιστικά εφαρμογής</h4>
+<div>
+    <p>Χρόνος λειτουργίας: {{.Data.Uptime.Hours}}ώ {{.Data.Uptime.Minutes}}λ {{.Data.Uptime.Seconds}}δ</p>
+    <p>Μέσος χρόνος απόκρισης: {{.Data.Latency}}ms</p>
+    <p>Συνολικά αιτήματα: {{.Data.Requests}}</p>
+    <p>Αναγνώσεις από την βάση δεδομένων: {{.Data.DbReads}}</p>
+    <p>Εγγραφές στην βάση δεδομένων: {{.Data.DbWrites}}</p>
+    <p>Αναγνώσεις από την InMemory storage: {{.Data.IMReads}}</p>
+    <p>Εγγραφές στην InMemory storage: {{.Data.IMWrites}}</p>
+</div>
+{{template "footer"}}
+{{end}}

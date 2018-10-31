@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"variables"
 	"views"
 	_ "views/adminviews"
 	_ "views/adminviews/create"
@@ -28,6 +29,6 @@ func main() {
 		os.Exit(0)
 	}()
 	log.Println("Server started..")
-	log.Println("Server started on Windows")
+	log.Println("Start time:", variables.StartTime)
 	http.ListenAndServe(":8000", views.GetMux())
 }

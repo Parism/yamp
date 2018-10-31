@@ -111,10 +111,8 @@ func (gk *Gatekeeper) StoreSessionToDb(sessionid, role, username, label string, 
 	session.SetKey("csrftoken", utils.GetRandStringb64())
 	rc, _ := datastorage.GetDataRouter().GetDb("sessions")
 	redisclient := rc.GetRedisClient()
-	status := redisclient.Set(sessionid, session.ToJSON(), 60*time.Minute)
-	log.Println("Set", status)
-	statuscmd := redisclient.ExpireAt(sessionid, time.Now().Add(60*time.Minute))
-	log.Println("Expire at", statuscmd)
+	redisclient.Set(sessionid, session.ToJSON(), 60*time.Minute)
+	redisclient.ExpireAt(sessionid, time.Now().Add(60*time.Minute))
 	http.Redirect(w, r, "/welcome", http.StatusFound)
 }
 
