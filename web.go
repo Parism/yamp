@@ -1,9 +1,11 @@
 package main
 
 import (
-	_ "datastorage"
+	"datastorage"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"views"
 	_ "views/adminviews"
 	_ "views/adminviews/create"
@@ -16,6 +18,15 @@ import (
 )
 
 func main() {
+	go func() {
+		sigchan := make(chan os.Signal, 10)
+		signal.Notify(sigchan, os.Interrupt)
+		<-sigchan
+		log.Println("Closing database connections")
+		datastorage.GetDataRouter().StopDbs()
+		log.Println("Exiting")
+		os.Exit(0)
+	}()
 	log.Println("Server started..")
 	log.Println("Server started on Windows")
 	http.ListenAndServe(":8000", views.GetMux())

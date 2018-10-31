@@ -283,3 +283,14 @@ func MakeMysql(dbconf DatabaseConfig) databaseclients.DbClient {
 	}
 	return mc
 }
+
+/*
+StopDbs function of DataRouter
+closes all connections to databases
+of this datarouter
+*/
+func (dr *DataRouter) StopDbs() {
+	for index := range dr.databases {
+		dr.databases[index].CloseConnection()
+	}
+}

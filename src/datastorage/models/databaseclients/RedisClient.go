@@ -61,3 +61,11 @@ func (rc *RedisClient) CheckConnection() bool {
 	}
 	return true
 }
+
+/*
+CloseConnection function
+closes a redis connection
+*/
+func (rc *RedisClient) CloseConnection() {
+	rc.client.Close()
+}

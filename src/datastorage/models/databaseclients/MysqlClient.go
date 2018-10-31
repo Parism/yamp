@@ -60,3 +60,11 @@ func (mc *MysqlClient) CheckConnection() bool {
 	return true
 
 }
+
+/*
+CloseConnection function
+closes a mysqlconnection
+*/
+func (mc *MysqlClient) CloseConnection() {
+	mc.db.Close()
+}

@@ -20,4 +20,5 @@ type DbClient interface {
 	CheckConnection() bool
 	GetRedisClient() *redis.Client
 	GetMysqlClient() *sql.DB
+	CloseConnection()
 }
