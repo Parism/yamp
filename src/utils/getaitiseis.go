@@ -17,6 +17,7 @@ func GetPersonAitiseis(idint int, c chan []models.Aitisi) {
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	res, err := dbc.Query("SELECT * FROM aitiseis where idperson = ? ORDER BY id DESC LIMIT 5", idint)
+	defer res.Close()
 	if err != nil {
 		log.Println(err)
 		c <- nil
@@ -31,6 +32,5 @@ func GetPersonAitiseis(idint int, c chan []models.Aitisi) {
 		aitisi.Date = models.DateBuilder(aitisi.Date)
 		aitiseis = append(aitiseis, aitisi)
 	}
-	res.Close()
 	c <- aitiseis
 }

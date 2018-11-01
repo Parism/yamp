@@ -8,9 +8,8 @@ import (
 	"middleware"
 	"models"
 	"net/http"
-	"time"
+	"strings"
 	"utils"
-	"variables"
 	"views"
 )
 
@@ -24,15 +23,19 @@ func init() {
 }
 
 func epopteia(w http.ResponseWriter, r *http.Request) {
-	cuptime := make(chan models.Uptime)
+	cappstats := make(chan models.AppStats)
 	cdbstats := make(chan []models.DbStat)
+	credisstats := make(chan models.RedisStats)
+	defer close(cappstats)
+	defer close(cdbstats)
+	defer close(credisstats)
 	go GetDbStats(cdbstats)
-	go GetUptime(cuptime)
+	go GetRedisStats(credisstats)
+	go GetAppStats(cappstats)
 	datamap := make(map[string]interface{})
-	datamap["Latency"] = logger.GetLatency()
-	datamap["Requests"] = logger.GetTotalRequests()
-	datamap["Uptime"] = <-cuptime
-	datamap["DbStats"] = <-cdbstats
+	datamap["App"] = <-cappstats
+	datamap["Db"] = <-cdbstats
+	datamap["Redis"] = <-credisstats
 	data := utils.Data{}
 	data.Context = utils.LoadContext(r)
 	data.Data = datamap
@@ -48,17 +51,13 @@ func epopteia(w http.ResponseWriter, r *http.Request) {
 	t.ExecuteTemplate(w, "epopteia", data)
 }
 
-/*
-GetUptime function
-fetches the uptime asynchronously
-*/
-func GetUptime(c chan models.Uptime) {
-	var uptime models.Uptime
-	diff := time.Since(variables.StartTime)
-	uptime.Hours = int(diff.Hours())
-	uptime.Minutes = int(diff.Minutes()) % 60
-	uptime.Seconds = int(diff.Seconds()) % 60 % 60
-	c <- uptime
+func GetAppStats(c chan models.AppStats) {
+	var appstats models.AppStats
+	appstats.Latency = logger.GetLatency()
+	appstats.Requests = logger.GetTotalRequests()
+	appstats.Uptime = logger.GetUptime()
+	appstats.MemUsed = logger.GetMemUsed()
+	c <- appstats
 }
 
 /*
@@ -89,5 +88,25 @@ func GetDbStats(c chan []models.DbStat) {
 		)
 		stats = append(stats, dbstat)
 	}
+	res.Close()
+	c <- stats
+}
+
+/*
+GeRedisStats function returns
+stats about the redis server
+*/
+func GetRedisStats(c chan models.RedisStats) {
+	var stats models.RedisStats
+	r, _ := datastorage.GetDataRouter().GetDb("sessions")
+	rc := r.GetRedisClient()
+	statusMem := rc.Info("Memory")
+	statusStats := rc.Info("Stats")
+	tempMem := statusMem.String()
+	tempStats := statusStats.String()
+	memarray := strings.Fields(tempMem)
+	statsarray := strings.Fields(tempStats)
+	stats.CommandsProcessed = strings.Split(statsarray[5], ":")[1]
+	stats.MemoryInUse = strings.Split(memarray[5], ":")[1]
 	c <- stats
 }

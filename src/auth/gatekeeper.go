@@ -129,6 +129,7 @@ func (gk *Gatekeeper) Login(w http.ResponseWriter, r *http.Request) {
 	mc, _ := datastorage.GetDataRouter().GetDb("common")
 	mysqlclient := mc.GetMysqlClient()
 	res, err := mysqlclient.Query("SELECT password,role,label from accounts where username=?", r.PostFormValue("username"))
+	defer res.Close()
 	if err != nil {
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return
@@ -137,7 +138,6 @@ func (gk *Gatekeeper) Login(w http.ResponseWriter, r *http.Request) {
 	if res.Next() {
 		_ = res.Scan(&password, &role, &label)
 	}
-	res.Close()
 	err = bcrypt.CompareHashAndPassword([]byte(password), []byte(r.PostFormValue("password")))
 	if err != nil {
 		messages.SetMessage(r, "Λάθος κωδικός ή όνομα χρήστη")

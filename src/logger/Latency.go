@@ -2,7 +2,7 @@ package logger
 
 import "time"
 
-var count int = 0
+var count uint64
 var mean float32
 
 /*

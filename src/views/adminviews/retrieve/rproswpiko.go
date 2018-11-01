@@ -42,6 +42,15 @@ func rproswpiko(w http.ResponseWriter, r *http.Request) {
 	canafores := make(chan []models.Anafora)
 	cergasies := make(chan []models.Ergasia)
 	cranks := make(chan []models.Rank)
+	defer close(cypiresies)
+	defer close(cierarxia)
+	defer close(ctypoiadeiwn)
+	defer close(ctypoiypiresiwn)
+	defer close(cadeies)
+	defer close(caitiseis)
+	defer close(canafores)
+	defer close(cergasies)
+	defer close(cranks)
 	go utils.GetTypoiAdeiwn(ctypoiadeiwn)
 	go utils.GetDimoiries(cierarxia)
 	go utils.GetAdeies(idint, cadeies)
@@ -55,6 +64,7 @@ func rproswpiko(w http.ResponseWriter, r *http.Request) {
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	res, err := dbc.Query("select * from rproswpiko where id=?", id)
+	defer res.Close()
 	if err != nil {
 		messages.SetMessage(r, "Invalid query")
 		http.Redirect(w, r, "/proswpiko", http.StatusMovedPermanently)
@@ -72,7 +82,6 @@ func rproswpiko(w http.ResponseWriter, r *http.Request) {
 			utils.RedirectWithError(w, r, "/proswpiko", "Ανεπιτυχής ανάκτηση προσωπικού", err)
 		}
 	}
-	res.Close()
 	datamap := make(map[string]interface{})
 	datamap["Ierarxia"] = <-cierarxia
 	datamap["Proswpiko"] = proswpiko

@@ -16,6 +16,7 @@ func GetTypoiYpiresiwn(label int, c chan []models.TyposYpiresias) {
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	res, err := dbc.Query("select typoiypiresiwn.id,typoiypiresiwn.perigrafi from typoiypiresiwn join ierarxia on idmonadas = ierarxia.id where ierarxia.id = ? || ierarxia.parentid = ?", label, label)
+	defer res.Close()
 	if err != nil {
 		log.Println(err)
 		c <- nil
@@ -27,6 +28,5 @@ func GetTypoiYpiresiwn(label int, c chan []models.TyposYpiresias) {
 			&typos.Perigrafi)
 		typoi = append(typoi, typos)
 	}
-	res.Close()
 	c <- typoi
 }

@@ -22,6 +22,7 @@ func GetDynAitiseisAll(d string, c chan []models.Aitisi) {
 	buffer.WriteString("JOIN proswpiko on proswpiko.id = aitiseis.idperson ")
 	buffer.WriteString("WHERE date = ?")
 	res, err := dbc.Query(buffer.String(), d)
+	defer res.Close()
 	if err != nil {
 		log.Println(err)
 		c <- nil
@@ -37,7 +38,6 @@ func GetDynAitiseisAll(d string, c chan []models.Aitisi) {
 		aitisi.Date = models.DateBuilder(aitisi.Date)
 		aitiseis = append(aitiseis, aitisi)
 	}
-	res.Close()
 	c <- aitiseis
 }
 
@@ -57,6 +57,7 @@ func GetDynAitiseisLabel(d string, label int, c chan []models.Aitisi) {
 	buffer.WriteString("WHERE date = ? and ")
 	buffer.WriteString("(ierarxia.id = ? || ierarxia.parentid=?) ")
 	res, err := dbc.Query(buffer.String(), d, label, label)
+	defer res.Close()
 	if err != nil {
 		log.Println(err)
 		c <- nil
@@ -72,6 +73,5 @@ func GetDynAitiseisLabel(d string, label int, c chan []models.Aitisi) {
 		aitisi.Date = models.DateBuilder(aitisi.Date)
 		aitiseis = append(aitiseis, aitisi)
 	}
-	res.Close()
 	c <- aitiseis
 }

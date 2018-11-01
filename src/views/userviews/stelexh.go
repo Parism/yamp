@@ -21,6 +21,7 @@ func init() {
 
 func stelexh(w http.ResponseWriter, r *http.Request) {
 	clabels := make(chan []models.Ierarxia)
+	defer close(clabels)
 	list := []models.Proswpiko{}
 	list = nil
 	rankmap := models.CustomMap{}

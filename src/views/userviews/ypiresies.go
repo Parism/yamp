@@ -23,6 +23,8 @@ func init() {
 func ypiresies(w http.ResponseWriter, r *http.Request) {
 	clabels := make(chan []models.Ierarxia)
 	ctypoiypiresiwn := make(chan []models.TyposYpiresias)
+	defer close(clabels)
+	defer close(ctypoiypiresiwn)
 	labelredis, _ := strconv.Atoi(utils.GetSessionValue(r, "label"))
 	go utils.GetLabels(labelredis, clabels)
 	datamap := make(map[string]interface{})

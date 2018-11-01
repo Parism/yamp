@@ -22,5 +22,6 @@ func GetRanks(c chan []models.Rank) {
 		)
 		ranks = append(ranks, rank)
 	}
+	res.Close()
 	c <- ranks
 }

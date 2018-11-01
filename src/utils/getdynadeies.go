@@ -24,6 +24,7 @@ func GetDynAdeies(d string, c chan []models.AdeiaDyn) {
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	res, err := dbc.Query(buffer.String(), d)
+	defer res.Close()
 	if err != nil {
 		log.Println("Error fetching labeled adeies dyn", err)
 		c <- nil
@@ -68,6 +69,7 @@ func GetDynAdeiesLabeled(d string, label int, c chan []models.AdeiaDyn) {
 	buffer.WriteString("and ")
 	buffer.WriteString("(iid = ? || pid=?)")
 	res, err := dbc.Query(buffer.String(), d, label, label)
+	defer res.Close()
 	if err != nil {
 		log.Println("Error fetching labeled adeies dyn", err)
 		c <- nil
@@ -89,6 +91,5 @@ func GetDynAdeiesLabeled(d string, label int, c chan []models.AdeiaDyn) {
 		metaboli.BuildRepr()
 		metaboles = append(metaboles, metaboli)
 	}
-	res.Close()
 	c <- metaboles
 }

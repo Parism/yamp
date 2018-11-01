@@ -25,6 +25,7 @@ func listes(w http.ResponseWriter, r *http.Request) {
 	rankmap := models.CustomMap{}
 	rankmap.Init()
 	clabels := make(chan []models.Ierarxia)
+	defer close(clabels)
 	go utils.GetDimoiries(clabels)
 	if r.Method == "POST" {
 		label := r.PostFormValue("label")

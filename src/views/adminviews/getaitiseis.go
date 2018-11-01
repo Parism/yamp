@@ -34,6 +34,7 @@ func getaitiseis(w http.ResponseWriter, r *http.Request) {
 	buffer.WriteString("WHERE aitiseis.id > ? ")
 	buffer.WriteString("ORDER BY aitiseis.id ASC, proswpiko.rank DESC, date ASC LIMIT 4;")
 	res, err := dbc.Query(buffer.String(), lastinpage)
+	defer res.Close()
 	if err != nil {
 		utils.RedirectWithError(w, r, utils.RedirectByRole(r), "Σφάλμα ανάκτησης αιτήσεων", err)
 		return

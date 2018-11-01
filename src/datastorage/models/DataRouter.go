@@ -205,6 +205,7 @@ along with a name identifier
 func (dr *DataRouter) LoadDatabases() {
 	var databasesconf []DatabaseConfig
 	confFile, err := os.Open("databases.json")
+	defer confFile.Close()
 	if err != nil {
 		log.Println(err)
 		log.Fatal("Error loading databases")
@@ -216,7 +217,6 @@ func (dr *DataRouter) LoadDatabases() {
 		log.Fatal("Error parsing database conf json")
 	}
 	dr.databaseConfigurations = databasesconf
-	confFile.Close()
 }
 
 /*

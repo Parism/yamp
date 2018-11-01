@@ -27,6 +27,7 @@ func CheckLabelAuthed(r *http.Request, label int) bool {
 	for res.Next() {
 		_ = res.Scan(&temp)
 		if label == temp {
+			res.Close()
 			return true
 		}
 	}

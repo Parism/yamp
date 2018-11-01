@@ -57,6 +57,7 @@ func GetDynProswpikoLabel(d string, label int, c chan []models.Proswpiko) {
 	buffer.WriteString("(ierarxia.id = ? || ierarxia.parentid = ?) ")
 	buffer.WriteString("ORDER BY ranks.id DESC")
 	res, err := dbc.Query(buffer.String(), d, label, label)
+	defer res.Close()
 	if err != nil {
 		log.Println(err)
 		c <- nil
@@ -73,6 +74,5 @@ func GetDynProswpikoLabel(d string, label int, c chan []models.Proswpiko) {
 		)
 		proswpikoArray = append(proswpikoArray, proswpiko)
 	}
-	res.Close()
 	c <- proswpikoArray
 }

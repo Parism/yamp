@@ -14,6 +14,7 @@ func CountAitiseis(c chan int) {
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	res, err := dbc.Query("SELECT COUNT(*) from aitiseis;")
+	defer res.Close()
 	if err != nil {
 		c <- -1
 		log.Println(err, "Count aitiseis function")

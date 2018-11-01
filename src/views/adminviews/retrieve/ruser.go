@@ -24,6 +24,7 @@ func init() {
 
 func ruser(w http.ResponseWriter, r *http.Request) {
 	cierarxia := make(chan []models.Groupld)
+	defer close(cierarxia)
 	id := r.URL.Query().Get("id")
 	idint, _ := strconv.Atoi(id)
 	go getIerarxia(cierarxia)
@@ -31,6 +32,7 @@ func ruser(w http.ResponseWriter, r *http.Request) {
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	res, err := dbc.Query("SELECT accounts.id,username,roles.rolestring,ierarxia.perigrafi from accounts join roles on accounts.role=roles.role left join ierarxia on accounts.label = ierarxia.id where accounts.id = ?;", idint)
+	defer res.Close()
 	if err != nil {
 		messages.SetMessage(r, "Invalid query")
 		http.Redirect(w, r, "/listusers", http.StatusMovedPermanently)
@@ -48,7 +50,6 @@ func ruser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	res.Close()
 	datamap := make(map[string]interface{})
 	datamap["ierarxia"] = ierarxia
 	datamap["user"] = user

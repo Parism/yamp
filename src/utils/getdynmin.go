@@ -18,6 +18,7 @@ func GetDynMinAll(d string, c chan []models.MinDynRecord) {
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	res, err := dbc.Query("select ranks.rank,typoiadeiwn.name,COUNT(*) from adeies join proswpiko on adeies.idperson = proswpiko.id join ranks on proswpiko.rank = ranks.id join typoiadeiwn on adeies.type = typoiadeiwn.id where (? between adeies.start and adeies.end) GROUP BY type,rank", d)
+	defer res.Close()
 	if err != nil {
 		log.Println(err)
 		c <- nil

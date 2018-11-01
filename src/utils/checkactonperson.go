@@ -27,6 +27,7 @@ func CanActOnPerson(r *http.Request, id int) bool {
 	for res.Next() {
 		_ = res.Scan(&temp)
 		if id == temp {
+			res.Close()
 			return true
 		}
 	}

@@ -1,14 +1,53 @@
 {{define "epopteia"}}
 {{template "header"}}
 {{template "navbar"}}
-<h4>Στατιστικά εφαρμογής</h4>
 <div>
-    <p>Χρόνος λειτουργίας: {{.Data.Uptime.Hours}}ώ {{.Data.Uptime.Minutes}}λ {{.Data.Uptime.Seconds}}δ</p>
-    <p>Μέσος χρόνος απόκρισης: {{.Data.Latency}}ms</p>
-    <p>Συνολικά αιτήματα: {{.Data.Requests}}</p>
-    {{range .Data.DbStats}}
-    {{.}}
-    {{end}}
+    <div class="container-fluid">
+        <h4>Στατιστικά εφαρμογής</h4>
+        {{.Data.App.Uptime}}
+        <p>Χρόνος λειτουργίας: {{.Data.App.Uptime.Hours}}ώ {{.Data.App.Uptime.Minutes}}λ {{.Data.App.Uptime.Seconds}}δ</p>
+        <p>Μέσος χρόνος απόκρισης: {{.Data.App.Latency}}ms</p>
+        <p>Συνολικά αιτήματα: {{.Data.App.Requests}}</p>
+        <p>Μνήμη σε χρήση: {{.Data.App.MemUsed}}MB</p> 
+    </div>
+    <div class="container-fluid">
+        <h4>Στατιστικά βάσης δεδομένων</h4>
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Τύπος</th>
+                    <th>Σύνολο</th>
+                    <th>Ανά δευτερόλεπτο</th>
+                    <th>Ανά λεπτό</th>
+                    <th>Ανά ώρα</th>
+                    <th>Ανά μέρα</th>
+                    <th>Από</th>
+                    <th>Εώς</th>
+                    <th>Περίοδος μέτρησης</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Data.Db}}
+                <tr>
+                    <td>{{.QueryType}}</td>
+                    <td>{{.TotalCount}}</td>
+                    <td>{{.PerSecond}}</td>
+                    <td>{{.PerMinute}}</td>
+                    <td>{{.PerHour}}</td>
+                    <td>{{.PerDay}}</td>
+                    <td>{{.StartDate}}</td>
+                    <td>{{.EndDate}}</td>
+                    <td>{{.Duration}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+    <div class="container-fluid">
+        <h4>Στατιστικά Redis</h4>
+        <p>Εξυπηρετηθέντα αιτήματα: {{.Data.Redis.CommandsProcessed}}</p>
+        <p>Μνήμη RAM σε χρήση: {{.Data.Redis.MemoryInUse}}</p>
+    </div>
 </div>
 {{template "footer"}}
 {{end}}

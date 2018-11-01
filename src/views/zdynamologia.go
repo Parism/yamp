@@ -21,6 +21,7 @@ func init() {
 
 func dynamologia(w http.ResponseWriter, r *http.Request) {
 	clabels := make(chan []models.Ierarxia)
+	defer close(clabels)
 	role := utils.GetSessionValue(r, "role")
 	roleint, _ := strconv.Atoi(role)
 	labelredis, _ := strconv.Atoi(utils.GetSessionValue(r, "label"))

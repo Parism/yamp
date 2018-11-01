@@ -25,6 +25,7 @@ func listaitiseis(w http.ResponseWriter, r *http.Request) {
 	dbc := db.GetMysqlClient()
 	var buffer bytes.Buffer
 	ccountaitiseis := make(chan int)
+	defer close(ccountaitiseis)
 	go utils.CountAitiseis(ccountaitiseis)
 	buffer.WriteString("SELECT aitiseis.id, idperson, aitiseis.perigrafi, date,")
 	buffer.WriteString("name, surname, ranks.rank, ierarxia.perigrafi FROM aitiseis ")

@@ -21,6 +21,8 @@ func init() {
 func listtypoiadeiwn(w http.ResponseWriter, r *http.Request) {
 	ctypoiadeias := make(chan []models.TyposAdeias)
 	ccategoryadeias := make(chan []models.CategoryAdeias)
+	defer close(ctypoiadeias)
+	defer close(ccategoryadeias)
 	go utils.GetTypoiAdeiwn(ctypoiadeias)
 	go utils.GetCategoriesAdeiwn(ccategoryadeias)
 	categories := <-ccategoryadeias

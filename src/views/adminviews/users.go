@@ -26,6 +26,7 @@ func listusers(w http.ResponseWriter, r *http.Request) {
 	//var buffer bytes.Buffer
 	//buffer.WriteString("SELECT accounts.id,username,rolestring")
 	res, err := mysqlclient.Query("SELECT id,username,rolestring from accounts join roles on accounts.role=roles.role order by roles.role desc, accounts.username asc")
+	defer res.Close()
 	if err != nil {
 		context.Message = err.Error()
 		http.Redirect(w, r, "/listusers", http.StatusMovedPermanently)
@@ -39,7 +40,6 @@ func listusers(w http.ResponseWriter, r *http.Request) {
 			&user.RealRole)
 		users = append(users, user)
 	}
-	res.Close()
 	res, err = mysqlclient.Query("SELECT role,rolestring from roles ORDER BY role ASC")
 	var role models.Role
 	var roles []models.Role
