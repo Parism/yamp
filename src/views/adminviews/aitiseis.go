@@ -26,14 +26,15 @@ func listaitiseis(w http.ResponseWriter, r *http.Request) {
 	var buffer bytes.Buffer
 	ccountaitiseis := make(chan int)
 	defer close(ccountaitiseis)
-	go utils.CountAitiseis(ccountaitiseis)
+	go utils.CountAitiseis(ccountaitiseis, utils.GetSessionValue(r, "role"))
 	buffer.WriteString("SELECT aitiseis.id, idperson, aitiseis.perigrafi, date,")
 	buffer.WriteString("name, surname, ranks.rank, ierarxia.perigrafi FROM aitiseis ")
 	buffer.WriteString("JOIN proswpiko on idperson = proswpiko.id ")
 	buffer.WriteString("JOIN ranks on proswpiko.rank = ranks.id ")
 	buffer.WriteString("JOIN ierarxia on proswpiko.label = ierarxia.id ")
+	buffer.WriteString("WHERE aitiseis.id not in (SELECT idaitisi from ypografes_aitisewn where signedas =?) ")
 	buffer.WriteString("ORDER BY aitiseis.id ASC, proswpiko.rank DESC, date ASC LIMIT 4;")
-	res, err := dbc.Query(buffer.String())
+	res, err := dbc.Query(buffer.String(), utils.GetSessionValue(r, "role"))
 	if err != nil {
 		utils.RedirectWithError(w, r, utils.RedirectByRole(r), "Σφάλμα ανάκτησης αιτήσεων", err)
 		return

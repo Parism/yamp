@@ -1,6 +1,7 @@
 {{define "listaitiseis"}}
 {{template "header"}}
 {{template "navbar"}}
+<input type="hidden" id="csrftoken" value={{.Context.Csrftoken}}>
 <h4>Λίστα ανοιχτών αιτήσεων</h4>
 {{if not .Aitiseis}}
 <p>Καμία νέα αίτηση</p>
@@ -28,8 +29,8 @@
             <td>{{.Name}}</td>
             <td>{{.Date}}</td>
             <td>{{.Monada}}</td>
-            <td><a href="" role="button" class="btn btn-success">Έγκριση <span class="glyphicon glyphicon-ok"></span></a></td>
-            <td><a href="" role="button" class="btn btn-danger">Απόρριψη <span class="glyphicon glyphicon-remove"></span></a></td>
+            <td><a href="#"  role="button" class="btn btn-success sign 1">Έγκριση <span class="glyphicon glyphicon-ok"></span></a></td>
+            <td><a href="#" role="button" class="btn btn-danger sign 0">Απόρριψη <span class="glyphicon glyphicon-remove"></span></a></td>
         </tr>
         {{end}}
     </tbody>

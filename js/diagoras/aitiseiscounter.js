@@ -1,16 +1,38 @@
 $(document).ready(aitiseiscounter());
 $(document).ready(getmaxaitisi());
 $(document).ready(addlistenerloadmore());
+$(document).ready(signaitisi());
+$(document).ready(getcsrftoken());
 var max;
 var end = false;
 var count
+var csrftoken
 table = document.getElementById("aitiseisTable")
 
-function signaitisi(){
-    $("#sign").click(function(e){
-        e.preventDefault()
-        $.ajax({
+function getcsrftoken(){
+    csrftoken = $("#csrftoken").val();
+}
 
+function signaitisi(){
+    $(".sign").off()
+    $(".sign").click(function(e){
+        this.blur()
+        e.preventDefault()
+        btn = this
+        $.ajax({
+            type: "POST",
+            url: "/signaitisi",
+            data: {
+                csrftoken: csrftoken,
+                sign: btn.classList[3],
+                id: btn.parentElement.parentElement.dataset.idaitisi
+            },
+            error: function(){
+                console.log("error signing")
+            },
+            success: function(data){
+                $(btn.parentElement.parentElement).fadeOut(300, function() {})
+            }
         })
     })
 }
@@ -51,8 +73,8 @@ function addlistenerloadmore(){
                     onoma.innerHTML = data[row].name
                     date.innerHTML = data[row].date
                     monada.innerHTML = data[row].monada
-                    egkrisi.innerHTML = "<a href=\"#\" role=\"button\" class=\"btn btn-success\">Έγκριση <span class=\"glyphicon glyphicon-ok\"></span></a>"
-                    aporripsi.innerHTML = "<a href=\"#\" role=\"button\" class=\"btn btn-danger\">Απόρριψη <span class=\"glyphicon glyphicon-remove\"></span></a>"
+                    egkrisi.innerHTML = "<a href=\"#\" role=\"button\" class=\"btn btn-success sign 1\">Έγκριση <span class=\"glyphicon glyphicon-ok\"></span></a>"
+                    aporripsi.innerHTML = "<a href=\"#\" role=\"button\" class=\"btn btn-danger sign 0\">Απόρριψη <span class=\"glyphicon glyphicon-remove\"></span></a>"
                 }
                 if(data.length > 3){
                     document.getElementById("loadmorecontent").innerHTML = "Περισσότερες (<span id=\"counter\">"+count+"</span>)"
@@ -62,6 +84,7 @@ function addlistenerloadmore(){
                 }
                 getmaxaitisi();
                 aitiseiscounter();
+                signaitisi();
             },
             timeout: 10000 // sets timeout to 10 seconds
         });
@@ -79,6 +102,11 @@ function aitiseiscounter(){
         spel = document.getElementById("counter")
         spel.innerHTML = spel.innerHTML - 4
         count = spel.innerHTML
+        if (count == '0'){
+            console.log("True")
+            document.getElementById("loadmorecontent").innerHTML = "Τέλος αιτήσεων"
+            end = true;
+        }
     }catch (err){
     }
 }

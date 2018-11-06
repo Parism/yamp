@@ -51,6 +51,10 @@ func epopteia(w http.ResponseWriter, r *http.Request) {
 	t.ExecuteTemplate(w, "epopteia", data)
 }
 
+/*
+GetAppStats function
+returns asynchronously stats about the application itself
+*/
 func GetAppStats(c chan models.AppStats) {
 	var appstats models.AppStats
 	appstats.Latency = logger.GetLatency()
@@ -93,7 +97,7 @@ func GetDbStats(c chan []models.DbStat) {
 }
 
 /*
-GeRedisStats function returns
+GetRedisStats function returns
 stats about the redis server
 */
 func GetRedisStats(c chan models.RedisStats) {

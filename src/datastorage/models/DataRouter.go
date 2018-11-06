@@ -156,6 +156,11 @@ func (dr *DataRouter) BuildStatements() {
 			Query: "DELETE FROM ergasies where id = ? and idperson = ?",
 			Index: "delete_ergasia",
 		},
+		StmtExpr{
+			Db:    "common",
+			Query: "INSERT INTO ypografes_aitisewn (iduser,idaitisi,status,signedas,date) VALUES((SELECT id from accounts where username = ?),?,?,?,CURDATE())",
+			Index: "sign_aitisi",
+		},
 	}
 	dr.statements = make(map[string]*sql.Stmt)
 	var stmt *sql.Stmt
@@ -236,6 +241,8 @@ func (dr *DataRouter) OpenDatabaseConnections() {
 		if client.CheckConnection() {
 			log.Printf("%s OK\n", databaseconf.ID)
 			dr.SetDb(databaseconf.ID, client)
+		} else {
+			log.Fatalln("Could not establish connection to", databaseconf.ID)
 		}
 
 	}

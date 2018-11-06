@@ -8,7 +8,9 @@ import (
 	"middleware"
 	"models"
 	"net/http"
+	"strconv"
 	"utils"
+	"variables"
 	"views"
 )
 
@@ -17,11 +19,21 @@ func init() {
 		middleware.Time(),
 		middleware.NoCache(),
 		middleware.NeedsSession(),
-		middleware.IsAdmin(),
+		middleware.IsCaptain(),
 	))
 }
 
 func getaitiseis(w http.ResponseWriter, r *http.Request) {
+	role := utils.GetSessionValue(r, "role")
+	roleint, _ := strconv.Atoi(role)
+	if roleint > variables.CAPTAIN {
+		getAitiseisAll(w, r)
+	} else {
+		getAitiseisLabeled(w, r)
+	}
+}
+
+func getAitiseisAll(w http.ResponseWriter, r *http.Request) {
 	db, _ := datastorage.GetDataRouter().GetDb("common")
 	dbc := db.GetMysqlClient()
 	lastinpage := r.URL.Query().Get("maxid")
@@ -31,9 +43,10 @@ func getaitiseis(w http.ResponseWriter, r *http.Request) {
 	buffer.WriteString("JOIN proswpiko on idperson = proswpiko.id ")
 	buffer.WriteString("JOIN ranks on proswpiko.rank = ranks.id ")
 	buffer.WriteString("JOIN ierarxia on proswpiko.label = ierarxia.id ")
-	buffer.WriteString("WHERE aitiseis.id > ? ")
+	buffer.WriteString("WHERE (aitiseis.id > ?) ")
+	buffer.WriteString("AND (aitiseis.id not in(select idaitisi from ypografes_aitisewn where signedas = ?)) ")
 	buffer.WriteString("ORDER BY aitiseis.id ASC, proswpiko.rank DESC, date ASC LIMIT 4;")
-	res, err := dbc.Query(buffer.String(), lastinpage)
+	res, err := dbc.Query(buffer.String(), lastinpage, utils.GetSessionValue(r, "role"))
 	defer res.Close()
 	if err != nil {
 		utils.RedirectWithError(w, r, utils.RedirectByRole(r), "Σφάλμα ανάκτησης αιτήσεων", err)
@@ -58,4 +71,8 @@ func getaitiseis(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jsonString, err := json.MarshalIndent(aitiseis, "", " ")
 	fmt.Fprintf(w, string(jsonString[:]))
+}
+
+func getAitiseisLabeled(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotAcceptable)
 }
