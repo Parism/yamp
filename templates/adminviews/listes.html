@@ -20,11 +20,11 @@
     {{range $key := .Data.rankmap.Keys}}
     <div class="col-sm-4">
         <strong>{{$key}}</strong>
-        <ul class="list-group">
+        <div id="myList" class="list-group">
             {{range $person := index $.Data.rankmap.Map $key}}
-            <li class="list-group-item"><a href="retrieveproswpiko?id={{$person.ID}}">{{$person.Surname}} {{$person.Name}}</a></li>
+            <a href="retrieveproswpiko?id={{$person.ID}}" class="list-group-item list-group-item-action">{{$person.Surname}} {{$person.Name}}</a>
         {{end}}
-        </ul>
+        </div>
     </div>
     {{end}}
 </div>
